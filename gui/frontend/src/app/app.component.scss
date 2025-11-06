@@ -58,7 +58,7 @@
   align-items: center;
   justify-content: center;
   
-  .material-icons-outlined {
+  .material-icons {
     font-size: 24px;
   }
   
@@ -216,7 +216,7 @@
   background: var(--card-bg, #fff);
   border: 1px solid #e0e0e0;
   border-radius: 12px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  box-shadow: none; 
   display: flex;
   flex-direction: column;
   padding: 12px;
@@ -245,7 +245,7 @@
   justify-content: center;
   transition: background-color 0.2s ease;
   
-  .material-icons-outlined {
+  .material-icons {
     font-size: 20px;
     color: #666;
   }
@@ -268,6 +268,57 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
+}
+
+/* Play/Pause button displayed over the ring (small circular control) */
+.play-pause-btn {
+  position: absolute;
+  left: 50%;
+  top: 38%; /* slightly above center so percentage remains visible */
+  transform: translate(-50%, -50%);
+  width: 48px; /* larger */
+  height: 48px; /* larger */
+  border: none;
+  display: inline-grid;
+  place-items: center;
+  background: transparent; /* remove circular background */
+  cursor: pointer;
+  z-index: 3;
+  transition: transform 0.12s ease;
+
+  .material-icons {
+    font-size: 24px; /* larger icon */
+    color: #222; /* black in light mode */
+    text-shadow: none; /* remove shadow for crisper icon */
+  }
+
+  &:hover { transform: translate(-50%, -50%) scale(1.06); }
+}
+
+/* Global play/pause button near downloads header */
+.global-play-btn {
+  width: 48px; /* slightly larger */
+  height: 48px; /* slightly larger */
+  display: inline-grid;
+  place-items: center;
+  border-radius: 6px; /* keep subtle rounding but remove circular background feel */
+  border: none;
+  background: transparent; /* remove background circle */
+  color: inherit; /* inherit text color from header */
+  cursor: pointer;
+
+  .material-icons { font-size: 22px; color: #222; }
+
+  &:hover { transform: scale(1.03); }
+}
+
+/* Light/dark adjustments */
+.app-container.dark-mode .global-play-btn { background: transparent; }
+.app-container.dark-mode .play-pause-btn { background: transparent; }
+/* Dark-mode icon colors */
+.app-container.dark-mode .play-pause-btn .material-icons,
+.app-container.dark-mode .global-play-btn .material-icons {
+  color: #e0e0e0; /* light icon in dark mode */
 }
 
 .ring {
@@ -315,6 +366,7 @@
   inset: 0;
   display: grid;
   place-items: center;
+  transform: translateY(10%); /* nudge percentage downward so icon sits above it */
   font-weight: 700;
   color: #333;
 }
@@ -425,7 +477,7 @@
   justify-content: center;
   min-width: 44px;
   
-  .material-icons-outlined {
+  .material-icons {
     font-size: 20px;
   }
 }
@@ -522,7 +574,7 @@
   justify-content: center;
   gap: 8px;
   
-  .material-icons-outlined {
+  .material-icons {
     font-size: 20px;
   }
 }
@@ -552,7 +604,7 @@
     background: rgba(255, 255, 255, 0.1);
   }
   
-  .theme-toggle .material-icons-outlined {
+  .theme-toggle .material-icons {
     color: #e0e0e0;
   }
   
@@ -685,7 +737,7 @@
   }
   
   .card-title { color: #e0e0e0; }
-  .icon-btn .material-icons-outlined { color: #bbb; }
+  .icon-btn .material-icons { color: #bbb; }
   .icon-btn:hover { background: rgba(255,255,255,0.08); }
   .ring-label { color: #e0e0e0; }
   .ring-inner { background: var(--bg, #2d2d2d); }

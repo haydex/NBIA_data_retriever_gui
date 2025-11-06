@@ -7,7 +7,7 @@
     </div>
     <div class="header-right">
       <button class="theme-toggle" (click)="toggleDarkMode()" [title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
-        <span class="material-icons-outlined">{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</span>
+  <span class="material-icons">{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</span>
       </button>
       <div class="user-info">
         <div class="user-name">Human</div>
@@ -23,8 +23,14 @@
     <div class="grid-section downloads-section">
       <div class="section-header">
         <div class="downloads-header-content">
-          <span class="downloads-title">Downloads</span>
-          <span class="downloads-percentage">{{overallProgress}}%</span>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span class="downloads-title">Downloads</span>
+              <!-- Global play/pause button -->
+              <button class="global-play-btn" (click)="toggleOverallPlay()" [title]="overallPlaying ? 'Pause all' : 'Play all'">
+                <span class="material-icons">{{ overallPlaying ? 'pause' : 'play_arrow' }}</span>
+              </button>
+            </div>
+            <span class="downloads-percentage">{{overallProgress}}%</span>
         </div>
         <div class="downloads-progress-bar">
           <div class="downloads-progress-fill" [style.width.%]="overallProgress"></div>
@@ -37,7 +43,7 @@
           <div class="card-header">
             <div class="card-title">{{ src.title }}</div>
             <button class="icon-btn" title="Settings">
-              <span class="material-icons-outlined">settings</span>
+              <span class="material-icons">settings</span>
             </button>
           </div>
           <div class="card-body">
@@ -49,6 +55,10 @@
                 [style.--track]="'var(--ring-track)'"
                 [style.--bg]="'var(--card-bg)'"
               >
+                  <!-- play/pause button overlay inside ring -->
+                  <button class="play-pause-btn" (click)="toggleSourcePlay(src.id, $event)" [title]="src.playing ? 'Pause' : 'Play'" aria-label="Toggle play">
+                    <span class="material-icons">{{ src.playing ? 'pause' : 'play_arrow' }}</span>
+                  </button>
                 <div class="ring-inner"></div>
                 <div class="ring-label">{{ src.progress }}%</div>
               </div>
@@ -91,35 +101,35 @@
     <div class="grid-section files-section" [class.collapsed]="filesCollapsed">
       <div class="section-header" (click)="filesCollapsed = !filesCollapsed">
         <span>Files Location</span>
-        <span class="material-icons-outlined collapse-icon">{{ filesCollapsed ? 'expand_more' : 'expand_less' }}</span>
+  <span class="material-icons collapse-icon">{{ filesCollapsed ? 'expand_more' : 'expand_less' }}</span>
       </div>
       <div class="section-content">
         <div class="file-input-row">
           <!-- <label class="file-label">Path/to/input/</label> -->
           <input type="text" [(ngModel)]="inputFilePath" class="file-input" placeholder="Path/to/the/input/directory">
           <button (click)="onSelectInputFile()" class="browse-btn" title="Browse">
-            <span class="material-icons-outlined">folder_open</span>
+            <span class="material-icons">folder_open</span>
           </button>
         </div>
         <div class="file-input-row">
           <!-- <label class="file-label">Path/to/output/</label> -->
           <input type="text" [(ngModel)]="outputDirPath" class="file-input" placeholder="Path/to/the/output/directory">
           <button (click)="onSelectOutputDirectory()" class="browse-btn" title="Browse">
-            <span class="material-icons-outlined">folder_open</span>
+            <span class="material-icons">folder_open</span>
           </button>
         </div>
         <div class="file-input-row">
           <!-- <label class="file-label">Path/to/the/manifests/</label> -->
           <input type="text" [(ngModel)]="outputDirPath" class="file-input" placeholder="Path/to/the/manifests/directory">
           <button (click)="onSelectOutputDirectory()" class="browse-btn" title="Browse">
-            <span class="material-icons-outlined">folder_open</span>
+            <span class="material-icons">folder_open</span>
           </button>
         </div>
       </div>
       <!-- Bottom Action Bar -->
       <div class="action-bar">
         <button (click)="onFetchFiles()" class="fetch-btn">
-          <span class="material-icons-outlined">file_download</span>
+          <span class="material-icons">file_download</span>
           Fetch Files
         </button>
       </div>
@@ -129,7 +139,7 @@
     <div class="grid-section settings-section" [class.collapsed]="settingsCollapsed">
       <div class="section-header" (click)="settingsCollapsed = !settingsCollapsed">
         <span>Advanced Settings</span>
-        <span class="material-icons-outlined collapse-icon">{{ settingsCollapsed ? 'expand_more' : 'expand_less' }}</span>
+  <span class="material-icons collapse-icon">{{ settingsCollapsed ? 'expand_more' : 'expand_less' }}</span>
       </div>
       <div class="section-content">
         <div class="settings-grid">
@@ -165,7 +175,7 @@
     <div class="grid-section output-section" [class.collapsed]="outputCollapsed">
       <div class="section-header" (click)="outputCollapsed = !outputCollapsed">
         <span>Output</span>
-        <span class="material-icons-outlined collapse-icon">{{ outputCollapsed ? 'expand_more' : 'expand_less' }}</span>
+  <span class="material-icons collapse-icon">{{ outputCollapsed ? 'expand_more' : 'expand_less' }}</span>
       </div>
       <div class="output-content">
         <div class="output-text">{{ status }}</div>

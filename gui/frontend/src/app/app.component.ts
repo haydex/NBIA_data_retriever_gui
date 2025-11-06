@@ -42,7 +42,10 @@ export class AppComponent implements OnInit {
     accent: string;
     logs: string[];
     status?: string;
+    playing?: boolean;
   }> = [];
+  // Global play/pause state
+  overallPlaying = false;
 
   ngOnInit() {
     // Detect system theme preference
@@ -63,7 +66,8 @@ export class AppComponent implements OnInit {
         progress: 100,
         accent: '#4caf50',
         logs: ['Connecting…', 'Downloading series 1/5', 'Chunk 32/120', 'Writing file 00000001.dcm', 'Writing file 00000002.dcm', 'Rate 12.5 MB/s', 'ETA 01:45', 'Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45'],
-        status: 'downloading'
+        status: 'downloading',
+        playing: true
       },
       {
         id: 'src-2',
@@ -71,7 +75,8 @@ export class AppComponent implements OnInit {
         progress: 20,
         accent: '#ff9800',
         logs: ['Queued…', 'Preparing download', 'Resolving metadata', 'Starting…'],
-        status: 'queued'
+        status: 'queued',
+        playing: false
       },
       {
         id: 'src-3',
@@ -79,11 +84,31 @@ export class AppComponent implements OnInit {
         progress: 60,
         accent: '#3f51b5',
         logs: ['Downloading…', 'File 10/200', 'Rate 8.3 MB/s', 'ETA 02:14'],
-        status: 'downloading'
+        status: 'downloading',
+        playing: true
       }
     ];
 
     this.updateOverallProgress();
+  }
+
+  // Toggle overall play/pause which also syncs per-source playing state
+  toggleOverallPlay() {
+    this.overallPlaying = !this.overallPlaying;
+    for (const s of this.sources) {
+      s.playing = this.overallPlaying;
+    }
+  }
+
+  // Toggle a single source's play/pause state
+  toggleSourcePlay(id: string, ev?: Event) {
+    if (ev) ev.stopPropagation();
+    const s = this.sources.find(x => x.id === id);
+    if (s) {
+      s.playing = !s.playing;
+      // If any source is paused, overallPlaying becomes false. If all playing, overallPlaying true.
+      this.overallPlaying = this.sources.every(x => x.playing);
+    }
   }
 
   toggleDarkMode() {
