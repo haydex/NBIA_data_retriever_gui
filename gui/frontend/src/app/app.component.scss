@@ -89,7 +89,6 @@
   grid-template-rows: 2fr auto auto auto;
   gap: 16px;
   padding: 16px;
-  /* Allow page to scroll when content exceeds viewport */
   overflow: auto;
 }
 
@@ -140,7 +139,7 @@
   }
 }
 
-/* Downloads section header (non-clickable) */
+/* Downloads section header */
 .downloads-section .section-header {
   cursor: default;
   flex-direction: column;
@@ -171,7 +170,7 @@
 
 .downloads-progress-bar {
   width: 100%;
-  height: 6px;
+  height: 8px;
   background: #e0e0e0;
   border-radius: 3px;
   overflow: hidden;
@@ -197,7 +196,6 @@
 
 /* Download Sources Cards */
 .downloads-section {
-  /* Theme tokens for cards */
   --card-bg: #fff;
   --ring-track: #e9ecef;
 }
@@ -207,7 +205,6 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
-  /* Allow horizontal scroll on narrow screens */
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -270,41 +267,41 @@
   gap: 6px;
 }
 
-/* Play/Pause button displayed over the ring (small circular control) */
+/* Play/Pause button */
 .play-pause-btn {
   position: absolute;
   left: 50%;
-  top: 38%; /* slightly above center so percentage remains visible */
+  top: 38%; 
   transform: translate(-50%, -50%);
-  width: 48px; /* larger */
-  height: 48px; /* larger */
+  width: 48px;
+  height: 48px; 
   border: none;
   display: inline-grid;
   place-items: center;
-  background: transparent; /* remove circular background */
+  background: transparent;
   cursor: pointer;
   z-index: 3;
   transition: transform 0.12s ease;
 
   .material-icons {
-    font-size: 24px; /* larger icon */
-    color: #222; /* black in light mode */
-    text-shadow: none; /* remove shadow for crisper icon */
+    font-size: 24px;
+    color: #222;
+    text-shadow: none;
   }
 
   &:hover { transform: translate(-50%, -50%) scale(1.06); }
 }
 
-/* Global play/pause button near downloads header */
+/* Global play/pause button */
 .global-play-btn {
-  width: 48px; /* slightly larger */
-  height: 48px; /* slightly larger */
+  width: 48px;
+  height: 48px;
   display: inline-grid;
   place-items: center;
-  border-radius: 6px; /* keep subtle rounding but remove circular background feel */
+  border-radius: 6px;
   border: none;
-  background: transparent; /* remove background circle */
-  color: inherit; /* inherit text color from header */
+  background: transparent;
+  color: inherit;
   cursor: pointer;
 
   .material-icons { font-size: 22px; color: #222; }
@@ -318,12 +315,12 @@
 /* Dark-mode icon colors */
 .app-container.dark-mode .play-pause-btn .material-icons,
 .app-container.dark-mode .global-play-btn .material-icons {
-  color: #e0e0e0; /* light icon in dark mode */
+  color: #e0e0e0;
 }
 
 .ring {
-  --size: 96px;           /* overall size */
-  --thickness: 6px;      /* ring thickness */
+  --size: 96px;
+  --thickness: 8px;
   width: var(--size);
   height: var(--size);
   border-radius: 50%;
@@ -343,11 +340,8 @@
     background: var(--accent, #4caf50);
     top: 50%;
     left: 50%;
-    /* place dot at top of circle */
     transform: translate(-50%, -50%) translateY(calc((var(--size) / -2) + (var(--thickness) / 2)));
   }
-  
-  /* end cap rotates with progress */
   &::after {
     transform: translate(-50%, -50%) rotate(calc(var(--value, 0) * 3.6deg))
                translateY(calc((var(--size) / -2) + (var(--thickness) / 2)));
@@ -366,7 +360,7 @@
   inset: 0;
   display: grid;
   place-items: center;
-  transform: translateY(10%); /* nudge percentage downward so icon sits above it */
+  transform: translateY(10%);
   font-weight: 700;
   color: #333;
 }
@@ -673,7 +667,6 @@
     }
   }
   
-  /* Style number input spinner arrows for dark mode */
   .setting-input[type="number"] {
     -webkit-appearance: none;
     -moz-appearance: textfield;
@@ -725,7 +718,6 @@
     color: #d4d4d4;
   }
 
-  /* Downloads cards theming for dark mode */
   .downloads-section {
     --card-bg: #2d2d2d;
     --ring-track: #3a3a3a;
