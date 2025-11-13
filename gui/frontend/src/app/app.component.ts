@@ -11,6 +11,7 @@ export class AppComponent implements OnInit {
   status = 'Ready';
   inputFilePath = '';
   outputDirPath = '';
+  manifestsDirPath = '';
 
   // Global output logs that appear in the Output panel
   outputLogs: string[] = [];
@@ -38,6 +39,7 @@ export class AppComponent implements OnInit {
   sources: Array<{
     id: string;
     title: string;
+    path?: string;
     progress: number;
     accent: string;
     logs: string[];
@@ -62,27 +64,30 @@ export class AppComponent implements OnInit {
     this.sources = [
       {
         id: 'src-1',
-        title: 'Source 1',
+        title: 'NBIA (Single TCIA file)',
+        path: '/Users/username/Documents/manifests/nbia',
         progress: 100,
-        accent: '#4caf50',
+        accent: '#2196F3',
         logs: ['Connecting…', 'Downloading series 1/5', 'Chunk 32/120', 'Writing file 00000001.dcm', 'Writing file 00000002.dcm', 'Rate 12.5 MB/s', 'ETA 01:45', 'Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45'],
         status: 'downloading',
         playing: true
       },
       {
         id: 'src-2',
-        title: 'Source 2',
+        title: 'PathDB (Receiving a spreadsheet containing image URLs)',
+        path: '/Users/username/Documents/manifests/pathdb',
         progress: 20,
-        accent: '#ff9800',
+        accent: '#2196F3',
         logs: ['Queued…', 'Preparing download', 'Resolving metadata', 'Starting…'],
         status: 'queued',
         playing: false
       },
       {
         id: 'src-3',
-        title: 'Source 3',
+        title: 'CRDC (Receiving a spreadsheet containing DRS URIs)',
+        path: '/Users/username/Documents/manifests/crdc',
         progress: 60,
-        accent: '#3f51b5',
+        accent: '#2196F3',
         logs: ['Downloading…', 'File 10/200', 'Rate 8.3 MB/s', 'ETA 02:14'],
         status: 'downloading',
         playing: true
@@ -111,6 +116,26 @@ export class AppComponent implements OnInit {
     }
   }
 
+  // Cancel a single source and remove it from the list
+  cancelSource(id: string) {
+    const index = this.sources.findIndex(x => x.id === id);
+    if (index !== -1) {
+      this.sources.splice(index, 1);
+      this.updateOverallProgress();
+      // If no sources remain, reset overallPlaying
+      if (this.sources.length === 0) {
+        this.overallPlaying = false;
+      }
+    }
+  }
+
+  // Cancel all downloads
+  cancelAllDownloads() {
+    this.sources = [];
+    this.overallPlaying = false;
+    this.overallProgress = 0;
+  }
+
   toggleDarkMode() {
     this.isDarkMode = !this.isDarkMode;
   }
@@ -119,6 +144,16 @@ export class AppComponent implements OnInit {
     OpenOutputDirectoryDialog().then((dirPath: string) => {
       if (dirPath) {
         this.outputDirPath = dirPath;
+      }
+    }).catch(err => {
+      this.status = "Error: " + err;
+    });
+  }
+
+  onSelectManifestsDirectory() {
+    OpenOutputDirectoryDialog().then((dirPath: string) => {
+      if (dirPath) {
+        this.manifestsDirPath = dirPath;
       }
     }).catch(err => {
       this.status = "Error: " + err;
@@ -180,7 +215,7 @@ export class AppComponent implements OnInit {
   }
 
   // Helpers for backend integration
-  setSources(sources: Array<{ id: string; title: string; progress: number; accent: string; logs: string[]; status?: string; }>) {
+  setSources(sources: Array<{ id: string; title: string; path?: string; progress: number; accent: string; logs: string[]; status?: string; }>) {
     this.sources = sources || [];
     this.updateOverallProgress();
   }

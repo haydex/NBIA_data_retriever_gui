@@ -29,6 +29,10 @@
               <button class="global-play-btn" (click)="toggleOverallPlay()" [title]="overallPlaying ? 'Pause all' : 'Play all'">
                 <span class="material-icons">{{ overallPlaying ? 'pause' : 'play_arrow' }}</span>
               </button>
+              <!-- Global cancel button -->
+              <button class="global-cancel-btn" (click)="cancelAllDownloads()" title="Cancel all downloads">
+                <span class="material-icons">close</span>
+              </button>
             </div>
             <span class="downloads-percentage">{{overallProgress}}%</span>
         </div>
@@ -41,9 +45,12 @@
       <div class="sources-cards">
         <div class="source-card" *ngFor="let src of sources">
           <div class="card-header">
-            <div class="card-title">{{ src.title }}</div>
-            <button class="icon-btn" title="Settings">
-              <span class="material-icons">settings</span>
+            <div class="card-title-container">
+              <div class="card-title">{{ src.title }}</div>
+              <div class="card-path" *ngIf="src.path">{{ src.path }}</div>
+            </div>
+            <button class="cancel-btn" (click)="cancelSource(src.id)" title="Cancel and remove">
+              <span class="material-icons">close</span>
             </button>
           </div>
           <div class="card-body">
@@ -120,8 +127,8 @@
         </div>
         <div class="file-input-row">
           <!-- <label class="file-label">Path/to/the/manifests/</label> -->
-          <input type="text" [(ngModel)]="outputDirPath" class="file-input" placeholder="Path/to/the/manifests/directory">
-          <button (click)="onSelectOutputDirectory()" class="browse-btn" title="Browse">
+          <input type="text" [(ngModel)]="manifestsDirPath" class="file-input" placeholder="Path/to/the/manifests/directory">
+          <button (click)="onSelectManifestsDirectory()" class="browse-btn" title="Browse">
             <span class="material-icons">folder_open</span>
           </button>
         </div>
