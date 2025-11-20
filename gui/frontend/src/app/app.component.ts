@@ -66,7 +66,7 @@ export class AppComponent implements OnInit {
         id: 'src-1',
         title: 'NBIA',
         path: '/Users/username/Documents/manifests/nbia',
-        progress: 100,
+        progress: 70,
         accent: '#2196F3',
         logs: ['Connecting…', 'Downloading series 1/5', 'Chunk 32/120', 'Writing file 00000001.dcm', 'Writing file 00000002.dcm', 'Rate 12.5 MB/s', 'ETA 01:45', 'Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45'],
         status: 'downloading',
@@ -76,7 +76,7 @@ export class AppComponent implements OnInit {
         id: 'src-2',
         title: 'PathDB',
         path: '/Users/username/Documents/manifests/pathdb',
-        progress: 20,
+        progress: 25,
         accent: '#2196F3',
         logs: ['Queued…', 'Preparing download', 'Resolving metadata', 'Starting…'],
         status: 'queued',
@@ -86,7 +86,7 @@ export class AppComponent implements OnInit {
         id: 'src-3',
         title: 'CRDC',
         path: '/Users/username/Documents/manifests/crdc',
-        progress: 60,
+        progress: 58,
         accent: '#2196F3',
         logs: ['Downloading…', 'File 10/200', 'Rate 8.3 MB/s', 'ETA 02:14'],
         status: 'downloading',
@@ -248,5 +248,11 @@ export class AppComponent implements OnInit {
     let sum = 0;
     for (const s of list) sum += (s.progress ?? 0);
     this.overallProgress = list.length ? Math.round(sum / list.length) : 0;
+  }
+
+  // Check if all sources are paused
+  get allPaused(): boolean {
+    if (!this.sources || this.sources.length === 0) return false;
+    return this.sources.every(s => !s.playing);
   }
 }

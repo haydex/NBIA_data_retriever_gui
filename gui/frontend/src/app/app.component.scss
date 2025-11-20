@@ -115,12 +115,12 @@
 .downloads-percentage { font-weight: 700; font-size: 18px; color: #333; }
 
 .downloads-progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 3px; overflow: hidden; position: relative; }
-.downloads-progress-fill { height: 100%; background: #2196F3; border-radius: 3px; transition: width 0.3s ease; }
+.downloads-progress-fill { height: 100%; background: var(--downloads-accent, #2196F3); border-radius: 3px; transition: width 0.3s ease; }
 
 .section-content { padding: 16px; flex: 1; }
 
 .downloads-section { min-height: 100px; }
-.downloads-section { --card-bg: #fff; --ring-track: #e9ecef; }
+.downloads-section { --card-bg: #fff; --ring-track: #e9ecef; --ring-paused: #9e9e9e; --downloads-accent: #2196F3; }
 
 .sources-cards { padding: 16px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
@@ -235,7 +235,7 @@
 .app-container.dark-mode .fetch-btn:hover { background: #0052a3; }
 .app-container.dark-mode .output-content { background: #0d0d0d; }
 .app-container.dark-mode .output-text { color: #d4d4d4; }
-.app-container.dark-mode .downloads-section { --card-bg: #2d2d2d; --ring-track: #3a3a3a; }
+.app-container.dark-mode .downloads-section { --card-bg: #2d2d2d; --ring-track: #3a3a3a; --ring-paused: #6b6b6b; --downloads-accent: #2196F3; }
 .app-container.dark-mode .source-card { border-color: #404040; box-shadow: 0 1px 2px rgba(0,0,0,0.25); }
 .app-container.dark-mode .card-title { color: #e0e0e0; }
 .app-container.dark-mode .card-path { color: #888; }

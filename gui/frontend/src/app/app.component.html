@@ -37,7 +37,10 @@
             <span class="downloads-percentage">{{overallProgress}}%</span>
         </div>
         <div class="downloads-progress-bar">
-          <div class="downloads-progress-fill" [style.width.%]="overallProgress"></div>
+          <div
+            class="downloads-progress-fill"
+            [style.width.%]="overallProgress"
+            [style.background]="allPaused ? 'var(--ring-paused)' : 'var(--downloads-accent)'"></div>
         </div>
       </div>
 
@@ -58,7 +61,7 @@
               <div
                 class="ring"
                 [style.--value]="src.progress"
-                [style.--accent]="src.accent"
+                [style.--accent]="src.playing ? src.accent : 'var(--ring-paused)'"
                 [style.--track]="'var(--ring-track)'"
                 [style.--bg]="'var(--card-bg)'"
               >
