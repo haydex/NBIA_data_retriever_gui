@@ -64,7 +64,7 @@ export class AppComponent implements OnInit {
     this.sources = [
       {
         id: 'src-1',
-        title: 'NBIA (Single TCIA file)',
+        title: 'NBIA',
         path: '/Users/username/Documents/manifests/nbia',
         progress: 100,
         accent: '#2196F3',
@@ -74,7 +74,7 @@ export class AppComponent implements OnInit {
       },
       {
         id: 'src-2',
-        title: 'PathDB (Receiving a spreadsheet containing image URLs)',
+        title: 'PathDB',
         path: '/Users/username/Documents/manifests/pathdb',
         progress: 20,
         accent: '#2196F3',
@@ -84,7 +84,7 @@ export class AppComponent implements OnInit {
       },
       {
         id: 'src-3',
-        title: 'CRDC (Receiving a spreadsheet containing DRS URIs)',
+        title: 'CRDC',
         path: '/Users/username/Documents/manifests/crdc',
         progress: 60,
         accent: '#2196F3',
