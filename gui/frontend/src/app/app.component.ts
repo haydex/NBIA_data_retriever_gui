@@ -13,10 +13,8 @@ export class AppComponent implements OnInit {
   outputDirPath = '';
   manifestsDirPath = '';
 
-  // Global output logs that appear in the Output panel
   outputLogs: string[] = [];
 
-  // Advanced options / UI state
   showAdvanced = false;
   maxConnections = 8;
   maxRetries = 3;
@@ -24,18 +22,14 @@ export class AppComponent implements OnInit {
   skipExisting = true;
   downloadInParallel = true;
 
-  // Collapse state
   filesCollapsed = false;
   settingsCollapsed = true;
   outputCollapsed = true;
 
-  // Dark mode
   isDarkMode = false;
 
-  // Overall download progress
   overallProgress = 0;
 
-  // Per-source progress model
   sources: Array<{
     id: string;
     title: string;
@@ -45,22 +39,19 @@ export class AppComponent implements OnInit {
     logs: string[];
     status?: string;
     playing?: boolean;
+    collapsed?: boolean;
   }> = [];
-  // Global play/pause state
   overallPlaying = false;
 
   ngOnInit() {
-    // Detect system theme preference
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       this.isDarkMode = true;
     }
 
-    // Listen for system theme changes
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
       this.isDarkMode = e.matches;
     });
 
-    // Example sources
     this.sources = [
       {
         id: 'src-1',
@@ -70,7 +61,8 @@ export class AppComponent implements OnInit {
         accent: '#2196F3',
         logs: ['Connecting…', 'Downloading series 1/5', 'Chunk 32/120', 'Writing file 00000001.dcm', 'Writing file 00000002.dcm', 'Rate 12.5 MB/s', 'ETA 01:45', 'Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45'],
         status: 'downloading',
-        playing: true
+        playing: true,
+        collapsed: false
       },
       {
         id: 'src-2',
@@ -80,7 +72,8 @@ export class AppComponent implements OnInit {
         accent: '#2196F3',
         logs: ['Queued…', 'Preparing download', 'Resolving metadata', 'Starting…'],
         status: 'queued',
-        playing: false
+        playing: false,
+        collapsed: true
       },
       {
         id: 'src-3',
@@ -90,14 +83,14 @@ export class AppComponent implements OnInit {
         accent: '#2196F3',
         logs: ['Downloading…', 'File 10/200', 'Rate 8.3 MB/s', 'ETA 02:14'],
         status: 'downloading',
-        playing: true
+        playing: true,
+        collapsed: true
       }
     ];
 
     this.updateOverallProgress();
   }
 
-  // Toggle overall play/pause which also syncs per-source playing state
   toggleOverallPlay() {
     this.overallPlaying = !this.overallPlaying;
     for (const s of this.sources) {
@@ -105,31 +98,41 @@ export class AppComponent implements OnInit {
     }
   }
 
-  // Toggle a single source's play/pause state
+  toggleSourceCollapse(id: string) {
+    try {
+      if (typeof window !== 'undefined' && typeof window.getSelection === 'function') {
+        const sel = window.getSelection();
+        if (sel && sel.toString().length > 0) return;
+      }
+    } catch (e) {
+    }
+
+    const s = this.sources.find(x => x.id === id);
+    if (s) {
+      s.collapsed = !s.collapsed;
+    }
+  }
+
   toggleSourcePlay(id: string, ev?: Event) {
     if (ev) ev.stopPropagation();
     const s = this.sources.find(x => x.id === id);
     if (s) {
       s.playing = !s.playing;
-      // If any source is paused, overallPlaying becomes false. If all playing, overallPlaying true.
       this.overallPlaying = this.sources.every(x => x.playing);
     }
   }
 
-  // Cancel a single source and remove it from the list
   cancelSource(id: string) {
     const index = this.sources.findIndex(x => x.id === id);
     if (index !== -1) {
       this.sources.splice(index, 1);
       this.updateOverallProgress();
-      // If no sources remain, reset overallPlaying
       if (this.sources.length === 0) {
         this.overallPlaying = false;
       }
     }
   }
 
-  // Cancel all downloads
   cancelAllDownloads() {
     this.sources = [];
     this.overallPlaying = false;
@@ -166,7 +169,6 @@ export class AppComponent implements OnInit {
       return;
     }
 
-    // Reconstruct the exact CLI command for display (quote paths to handle spaces)
     const cliPath = '../nbia-data-retriever-cli';
     const parts: string[] = [];
     parts.push(cliPath);
@@ -188,11 +190,9 @@ export class AppComponent implements OnInit {
     }
     const cmdStr = parts.join(' ');
 
-    // Show command immediately in the status window
     this.status = 'Running: ' + cmdStr;
     this.appendLog(this.status);
 
-    // Call backend to run the CLI
     RunCLIFetch(this.inputFilePath, this.outputDirPath, this.maxConnections, this.maxRetries, this.simultaneousDownloads, this.skipExisting, this.downloadInParallel)
       .then((result: string) => {
         this.status = result;
@@ -214,13 +214,16 @@ export class AppComponent implements OnInit {
     });
   }
 
-  // Helpers for backend integration
   setSources(sources: Array<{ id: string; title: string; path?: string; progress: number; accent: string; logs: string[]; status?: string; }>) {
-    this.sources = sources || [];
+    const list = (sources || []).map((s, idx) => ({
+      ...s,
+      playing: (s as any).playing ?? false,
+      collapsed: (s as any).collapsed ?? (idx !== 0)
+    }));
+    this.sources = list;
     this.updateOverallProgress();
   }
 
-  // Update progress for a single source by id
   updateSourceProgress(id: string, progress: number) {
     const s = this.sources.find(x => x.id === id);
     if (s) {
@@ -229,7 +232,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-  // Append a log line to a specific source
   appendSourceLog(id: string, line: string) {
     const s = this.sources.find(x => x.id === id);
     if (s) {
@@ -237,12 +239,10 @@ export class AppComponent implements OnInit {
     }
   }
 
-  // Append to the global output panel
   appendLog(line: string) {
     this.outputLogs.push(line);
   }
 
-  // Calculate Overall Progress
   updateOverallProgress() {
     const list = this.sources ?? [];
     let sum = 0;
@@ -250,7 +250,6 @@ export class AppComponent implements OnInit {
     this.overallProgress = list.length ? Math.round(sum / list.length) : 0;
   }
 
-  // Check if all sources are paused
   get allPaused(): boolean {
     if (!this.sources || this.sources.length === 0) return false;
     return this.sources.every(s => !s.playing);

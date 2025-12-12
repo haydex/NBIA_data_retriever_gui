@@ -23,18 +23,20 @@
     <div class="grid-section downloads-section">
       <div class="section-header">
         <div class="downloads-header-content">
-            <div style="display:flex;align-items:center;gap:12px;">
+            <div class="downloads-left">
               <span class="downloads-title">Downloads</span>
+            </div>
+            <div class="downloads-right">
+              <div class="source-percentage downloads-percentage">{{overallProgress}}%</div>
               <!-- Global play/pause button -->
-              <button class="global-play-btn" (click)="toggleOverallPlay()" [title]="overallPlaying ? 'Pause all' : 'Play all'">
+              <button class="play-pause-small" (click)="toggleOverallPlay()" [title]="overallPlaying ? 'Pause all' : 'Play all'">
                 <span class="material-icons">{{ overallPlaying ? 'pause' : 'play_arrow' }}</span>
               </button>
               <!-- Global cancel button -->
-              <button class="global-cancel-btn" (click)="cancelAllDownloads()" title="Cancel all downloads">
+              <button class="cancel-btn" (click)="cancelAllDownloads()" title="Cancel all downloads">
                 <span class="material-icons">close</span>
               </button>
             </div>
-            <span class="downloads-percentage">{{overallProgress}}%</span>
         </div>
         <div class="downloads-progress-bar">
           <div
@@ -46,35 +48,56 @@
 
       <!-- Download Sources Cards -->
       <div class="sources-cards">
-        <div class="source-card" *ngFor="let src of sources">
+        <div class="source-card" *ngFor="let src of sources" (click)="toggleSourceCollapse(src.id)">
           <div class="card-header">
             <div class="card-title-container">
               <div class="card-title">{{ src.title }}</div>
               <div class="card-path" *ngIf="src.path">{{ src.path }}</div>
             </div>
-            <button class="cancel-btn" (click)="cancelSource(src.id)" title="Cancel and remove">
-              <span class="material-icons">close</span>
-            </button>
-          </div>
-          <div class="card-body">
-            <div class="progress-wrap">
-              <div
-                class="ring"
-                [style.--value]="src.progress"
-                [style.--accent]="src.playing ? src.accent : 'var(--ring-paused)'"
-                [style.--track]="'var(--ring-track)'"
-                [style.--bg]="'var(--card-bg)'"
-              >
-                  <!-- play/pause button overlay inside ring -->
-                  <button class="play-pause-btn" (click)="toggleSourcePlay(src.id, $event)" [title]="src.playing ? 'Pause' : 'Play'" aria-label="Toggle play">
-                    <span class="material-icons">{{ src.playing ? 'pause' : 'play_arrow' }}</span>
-                  </button>
-                <div class="ring-inner"></div>
-                <div class="ring-label">{{ src.progress }}%</div>
-              </div>
+            <!-- Header controls only visible when collapsed to conserve vertical space when collapsed -->
+            <div class="source-controls" *ngIf="src.collapsed">
+              <div class="source-percentage">{{ src.progress }}%</div>
+              <button class="play-pause-small" (click)="toggleSourcePlay(src.id, $event)" [title]="src.playing ? 'Pause' : 'Play'">
+                <span class="material-icons">{{ src.playing ? 'pause' : 'play_arrow' }}</span>
+              </button>
+              <button class="cancel-btn" (click)="cancelSource(src.id); $event.stopPropagation()" title="Cancel and remove">
+                <span class="material-icons">close</span>
+              </button>
             </div>
-            <div class="card-output">
-              <div *ngFor="let line of src.logs">{{ line }}</div>
+            <div class="source-controls" *ngIf="!src.collapsed">
+              <button class="cancel-btn" (click)="cancelSource(src.id); $event.stopPropagation()" title="Cancel and remove">
+                <span class="material-icons">close</span>
+              </button>
+            </div>
+          </div>
+          <div class="card-body" (click)="$event.stopPropagation()">
+            <!-- Expanded view: circular ring + logs (render as siblings so grid puts them side-by-side) -->
+            <ng-container *ngIf="!src.collapsed">
+              <div class="progress-wrap">
+                <div
+                  class="ring"
+                  [style.--value]="src.progress"
+                  [style.--accent]="src.playing ? src.accent : 'var(--ring-paused)'"
+                  [style.--track]="'var(--ring-track)'"
+                  [style.--bg]="'var(--card-bg)'"
+                >
+                    <!-- play/pause button overlay inside ring -->
+                    <button class="play-pause-btn" (click)="toggleSourcePlay(src.id, $event)" [title]="src.playing ? 'Pause' : 'Play'" aria-label="Toggle play">
+                      <span class="material-icons">{{ src.playing ? 'pause' : 'play_arrow' }}</span>
+                    </button>
+                  <div class="ring-inner"></div>
+                  <div class="ring-label">{{ src.progress }}%</div>
+                </div>
+              </div>
+              <div class="card-output">
+                <div *ngFor="let line of src.logs">{{ line }}</div>
+              </div>
+            </ng-container>
+            <!-- Collapsed view: compact linear progress bar, no logs -->
+            <div *ngIf="src.collapsed" class="card-body-collapsed">
+              <div class="linear-progress">
+                <div class="linear-fill" [style.width.%]="src.progress" [style.background]="src.playing ? src.accent : 'var(--ring-paused)'"></div>
+              </div>
             </div>
           </div>
         </div>

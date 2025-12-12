@@ -110,12 +110,14 @@
 .downloads-section .section-header { cursor: default; flex-direction: column; align-items: stretch; gap: 8px; }
 .downloads-section .section-header:hover { background: #f8f9fa; }
 
-.downloads-header-content { display: flex; justify-content: space-between; align-items: center; }
+ .downloads-header-content { display: flex; justify-content: space-between; align-items: center; }
+.downloads-left { display:flex; align-items:center; }
+.downloads-right { display:flex; align-items:center; gap:8px; }
 .downloads-title { font-weight: 600; font-size: 14px; }
-.downloads-percentage { font-weight: 700; font-size: 18px; color: #333; }
+.downloads-percentage { font-weight: 700; font-size: 18px; color: #333; min-width: 44px; text-align: right; opacity: 0.95; }
 
-.downloads-progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 3px; overflow: hidden; position: relative; }
-.downloads-progress-fill { height: 100%; background: var(--downloads-accent, #2196F3); border-radius: 3px; transition: width 0.3s ease; }
+.downloads-progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 999px; overflow: hidden; position: relative; }
+.downloads-progress-fill { height: 100%; background: var(--downloads-accent, #2196F3); border-radius: 999px; transition: width 0.3s ease; }
 
 .section-content { padding: 16px; flex: 1; }
 
@@ -125,6 +127,7 @@
 .sources-cards { padding: 16px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 .source-card { background: var(--card-bg, #fff); border: 1px solid #e0e0e0; border-radius: 12px; box-shadow: none; display: flex; flex-direction: column; padding: 12px; }
+.source-card { transition: background-color 0.12s ease, transform 0.06s ease; }
 
 .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .card-title-container { display: flex; flex-direction: column; gap: 4px; }
@@ -139,6 +142,12 @@
 .cancel-btn .material-icons { font-size: 20px; color: #383838; }
 .cancel-btn:hover { transform: scale(1.04); background: rgba(255,82,82,0.08); }
 .cancel-btn:hover .material-icons { color: #ff5252; }
+
+.source-controls { display: flex; align-items: center; gap: 8px; }
+.source-percentage { font-weight: 700; color: #333; font-size: 18px; min-width: 44px; text-align: right; opacity: 0.95; }
+.play-pause-small { width: 36px; height: 36px; display: inline-grid; place-items: center; border-radius: 50%; border: 1px solid rgba(0,0,0,0.06); background: #f3f4f5; color: inherit; cursor: pointer; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
+.play-pause-small .material-icons { font-size: 20px; color: #383838; }
+.play-pause-small:hover { transform: scale(1.02); background: #ececec; }
 
 .card-body { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; }
 .progress-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
@@ -156,9 +165,9 @@
 .global-cancel-btn:hover { transform: scale(1.02); background: rgba(255,82,82,0.08); }
 .global-cancel-btn:hover .material-icons { color: #ff5252; }
 
-.app-container.dark-mode .global-play-btn, .app-container.dark-mode .global-cancel-btn, .app-container.dark-mode .cancel-btn { background: #3a3a3a; }
+.app-container.dark-mode .global-play-btn, .app-container.dark-mode .global-cancel-btn, .app-container.dark-mode .cancel-btn, .app-container.dark-mode .play-pause-small { background: #3a3a3a; }
 .app-container.dark-mode .play-pause-btn { background: transparent; }
-.app-container.dark-mode .play-pause-btn .material-icons, .app-container.dark-mode .global-play-btn .material-icons, .app-container.dark-mode .global-cancel-btn .material-icons, .app-container.dark-mode .cancel-btn .material-icons { color: #e0e0e0; }
+.app-container.dark-mode .play-pause-btn .material-icons, .app-container.dark-mode .play-pause-small .material-icons, .app-container.dark-mode .global-play-btn .material-icons, .app-container.dark-mode .global-cancel-btn .material-icons, .app-container.dark-mode .cancel-btn .material-icons { color: #e0e0e0; }
 
 .ring { --size: 96px; --thickness: 8px; width: var(--size); height: var(--size); border-radius: 50%; position: relative; background: conic-gradient(var(--accent, #4caf50) calc(var(--value, 0) * 1%), var(--track, #e9ecef) 0); display: grid; place-items: center; }
 .ring::before, .ring::after { content: ""; position: absolute; width: var(--thickness); height: var(--thickness); border-radius: 50%; background: var(--accent, #4caf50); top: 50%; left: 50%; transform: translate(-50%, -50%) translateY(calc((var(--size) / -2) + (var(--thickness) / 2))); }
@@ -168,6 +177,16 @@
 .ring-label { position: absolute; inset: 0; display: grid; place-items: center; transform: translateY(10%); font-weight: 700; color: #333; }
 .ring-caption { font-size: 11px; color: #888; }
 .card-output { border: 1px solid #e6e6e6; border-radius: 8px; background: #fafafa; padding: 8px; min-height: 84px; max-height: 120px; overflow: auto; font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace; font-size: 12px; color: #555; }
+
+.card-body-collapsed { grid-column: 1 / -1; width: 100%; }
+.linear-progress { height: 8px; background: #e0e0e0; border-radius: 999px; overflow: hidden; width: 100%; }
+.linear-fill { height: 100%; width: 0%; background: var(--downloads-accent, #2196F3); transition: width 0.25s ease; border-radius: 999px; }
+
+.source-card { cursor: pointer; }
+.source-card .source-controls button { cursor: pointer; }
+
+.source-card:hover { background-color: rgba(0,0,0,0.03); transform: translateY(-1px); }
+.app-container.dark-mode .source-card:hover { background-color: rgba(255,255,255,0.03); }
 
 @media (max-width: 1200px) { .sources-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 720px) { .sources-cards { grid-template-columns: 1fr; } }
@@ -216,6 +235,7 @@
 .app-container.dark-mode .section-header:hover { background: #333; }
 .app-container.dark-mode .collapse-icon { color: #e0e0e0; }
 .app-container.dark-mode .downloads-percentage { color: #e0e0e0; }
+.app-container.dark-mode .source-percentage { color: #e0e0e0; }
 .app-container.dark-mode .downloads-progress-bar { background: #404040; }
 .app-container.dark-mode .downloads-progress-fill { background: #2196F3; }
 .app-container.dark-mode .downloads-section .section-header:hover { background: #252525; }
@@ -252,4 +272,6 @@
 .app-container.dark-mode .ring-inner { background: var(--bg, #2d2d2d); }
 .app-container.dark-mode .ring-caption { color: #aaa; }
 .app-container.dark-mode .card-output { background: #0d0d0d; border-color: #333; color: #cfcfcf; }
+
+.app-container.dark-mode .linear-progress { background: #404040; }
 
