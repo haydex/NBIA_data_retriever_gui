@@ -31,7 +31,7 @@
 }
 
 .app-icon {
-  width: 200px;
+  width: 250px;
   height: 32px;
   object-fit: contain;
   background: transparent;
@@ -274,4 +274,114 @@
 .app-container.dark-mode .card-output { background: #0d0d0d; border-color: #333; color: #cfcfcf; }
 
 .app-container.dark-mode .linear-progress { background: #404040; }
+
+// Toast Notification Styles
+.toast-container {
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+  right: 15px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  font-size: 14px;
+  font-weight: 500;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.toast-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.toast-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+
+.toast-close .material-icons {
+  font-size: 20px;
+  color: white;
+}
+
+.toast-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+// Toast type variations
+.toast-success {
+  background: #4caf50;
+  color: white;
+}
+
+.toast-error {
+  background: #f44336;
+  color: white;
+}
+
+.toast-warning {
+  background: #ff9800;
+  color: white;
+}
+
+.toast-info {
+  background: #2196f3;
+  color: white;
+}
+
+// Dark mode adjustments for toast
+.app-container.dark-mode {
+  .toast-success {
+    background: #2e7d32;
+  }
+
+  .toast-error {
+    background: #c62828;
+  }
+
+  .toast-warning {
+    background: #f57c00;
+  }
+
+  .toast-info {
+    background: #1976d2;
+  }
+
+  .toast-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
 

@@ -3,7 +3,7 @@
   <!-- Header -->
   <div class="header">
     <div class="header-left">
-      <img [src]="isDarkMode ? 'assets/app-title-dark.svg' : 'assets/app-title.svg'" alt="TCIA" class="app-icon">
+      <img [src]="isDarkMode ? 'assets/app-title-light.svg' : 'assets/app-title-dark.svg'" alt="TCIA" class="app-icon">
     </div>
     <div class="header-right">
       <button class="theme-toggle" (click)="toggleDarkMode()" [title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
@@ -347,5 +347,20 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container">
+    <div class="toast" [class]="'toast-' + toast.type" *ngFor="let toast of toasts" [@slideIn]>
+      <div class="toast-content">
+        <span class="material-icons toast-icon">
+          {{ toast.type === 'success' ? 'check_circle' : toast.type === 'error' ? 'error' : toast.type === 'warning' ? 'warning' : 'info' }}
+        </span>
+        <span class="toast-message">{{ toast.message }}</span>
+      </div>
+      <button class="toast-close" (click)="hideToast(toast.id)" title="Close">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
   </div>
 </div>

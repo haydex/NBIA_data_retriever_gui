@@ -1,11 +1,23 @@
 import { Component, OnInit } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FetchFiles, OpenInputFileDialog, OpenOutputDirectoryDialog, RunCLIFetch } from '../../wailsjs/go/main/App';
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  animations: [
+    trigger('slideIn', [
+      transition(':enter', [
+        style({ transform: 'translateY(100%)' }),
+        animate('300ms ease-out', style({ transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ transform: 'translateY(100%)' }))
+      ])
+    ])
+  ]
 })
 export class AppComponent implements OnInit {
   status = 'Ready';
@@ -42,6 +54,15 @@ export class AppComponent implements OnInit {
     collapsed?: boolean;
   }> = [];
   overallPlaying = false;
+
+  // Toast notification properties
+  toasts: Array<{
+    id: number;
+    message: string;
+    type: 'success' | 'error' | 'info' | 'warning';
+  }> = [];
+  private readonly maxToasts = 3;
+  private toastIdCounter = 0;
 
   ngOnInit() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -119,17 +140,23 @@ export class AppComponent implements OnInit {
     if (s) {
       s.playing = !s.playing;
       this.overallPlaying = this.sources.every(x => x.playing);
+      
+      if (!s.playing) {
+        this.showToast(`${s.title} download paused.`, 'warning');
+      }
     }
   }
 
   cancelSource(id: string) {
     const index = this.sources.findIndex(x => x.id === id);
     if (index !== -1) {
+      const sourceName = this.sources[index].title;
       this.sources.splice(index, 1);
       this.updateOverallProgress();
       if (this.sources.length === 0) {
         this.overallPlaying = false;
       }
+      this.showToast(`${sourceName} download cancelled and removed.`, 'success');
     }
   }
 
@@ -166,6 +193,7 @@ export class AppComponent implements OnInit {
   onFetchFiles() {
     if (!this.inputFilePath || !this.outputDirPath) {
       this.status = "Please select an input TCIA file, an output directory, and a Manifests directory.";
+      this.showToast("Please select an input TCIA file and an output directory.", 'error');
       return;
     }
 
@@ -253,5 +281,32 @@ export class AppComponent implements OnInit {
   get allPaused(): boolean {
     if (!this.sources || this.sources.length === 0) return false;
     return this.sources.every(s => !s.playing);
+  }
+
+  /**
+   * Show a toast notification
+   * @param message The message to display
+   * @param type The type of toast: 'success' (green), 'error' (red), 'info' (blue), 'warning' (orange)
+   */
+  showToast(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') {
+    if (this.toasts.length >= this.maxToasts) {
+      this.toasts.shift();
+    }
+    const toast = {
+      id: this.toastIdCounter++,
+      message,
+      type
+    };
+    this.toasts.push(toast);
+  }
+
+  /**
+   * Hide a specific toast notification
+   */
+  hideToast(id: number) {
+    const index = this.toasts.findIndex(t => t.id === id);
+    if (index !== -1) {
+      this.toasts.splice(index, 1);
+    }
   }
 }
