@@ -52,6 +52,7 @@ export class AppComponent implements OnInit {
     status?: string;
     playing?: boolean;
     collapsed?: boolean;
+    stats?: { loaded: string | number; completed: string | number; failed: string | number; inProgress: string | number; skipped: string | number };
   }> = [];
   overallPlaying = false;
 
@@ -61,7 +62,7 @@ export class AppComponent implements OnInit {
     message: string;
     type: 'success' | 'error' | 'info' | 'warning';
   }> = [];
-  private readonly maxToasts = 3;
+  private readonly maxToasts = 1;
   private toastIdCounter = 0;
 
   ngOnInit() {
@@ -76,36 +77,99 @@ export class AppComponent implements OnInit {
     this.sources = [
       {
         id: 'src-1',
-        title: 'NBIA',
+        title: 'Manifest 1',
         path: '/Users/username/Documents/manifests/nbia',
         progress: 70,
         accent: '#2196F3',
-        logs: ['Connecting…', 'Downloading series 1/5', 'Chunk 32/120', 'Writing file 00000001.dcm', 'Writing file 00000002.dcm', 'Rate 12.5 MB/s', 'ETA 01:45', 'Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45','Rate 12.5 MB/s', 'ETA 01:45'],
+        logs: ['Connecting…', 'Downloading series 1/5', 'Chunk 32/120', 'Writing file 00000001.dcm', 'Writing file 00000002.dcm', 'Rate 12.5 MB/s', 'ETA 01:45', 'Downloading series 1/5', 'Chunk 32/120', 'Writing file 00000001.dcm', 'Writing file 00000002.dcm', 'Rate 12.5 MB/s', 'ETA 01:45'],
         status: 'downloading',
         playing: true,
-        collapsed: false
+        collapsed: false,
+        stats: { loaded: '4.5K', completed: '3K', failed: 4, inProgress: '1.5K', skipped: 60 }
       },
       {
         id: 'src-2',
-        title: 'PathDB',
+        title: 'Manifest 2',
         path: '/Users/username/Documents/manifests/pathdb',
         progress: 25,
         accent: '#2196F3',
         logs: ['Queued…', 'Preparing download', 'Resolving metadata', 'Starting…'],
         status: 'queued',
         playing: false,
-        collapsed: true
+        collapsed: true,
+        stats: { loaded: '7M', completed: '7M', failed: '55K', inProgress: 0, skipped: '31K' }
       },
       {
         id: 'src-3',
-        title: 'CRDC',
+        title: 'Manifest 3',
         path: '/Users/username/Documents/manifests/crdc',
         progress: 58,
         accent: '#2196F3',
         logs: ['Downloading…', 'File 10/200', 'Rate 8.3 MB/s', 'ETA 02:14'],
         status: 'downloading',
         playing: true,
-        collapsed: true
+        collapsed: true,
+        stats: { loaded: '4.5K', completed: '3K', failed: 4, inProgress: '1.5K', skipped: 60 }
+      },
+      {
+        id: 'src-4',
+        title: 'Manifest 4',
+        path: '/Users/username/Documents/manifests/manifest4',
+        progress: 12,
+        accent: '#9C27B0',
+        logs: ['Queued…', 'Waiting for slot'],
+        status: 'queued',
+        playing: false,
+        collapsed: true,
+        stats: { loaded: '1.2K', completed: 0, failed: 0, inProgress: 0, skipped: 0 }
+      },
+      {
+        id: 'src-5',
+        title: 'Manifest 5',
+        path: '/Users/username/Documents/manifests/manifest5',
+        progress: 100,
+        accent: '#4caf50',
+        logs: ['Completed successfully'],
+        status: 'completed',
+        playing: false,
+        collapsed: true,
+        stats: { loaded: '8.3K', completed: '8.3K', failed: 0, inProgress: 0, skipped: 2 }
+      },
+      {
+        id: 'src-6',
+        title: 'Manifest 6',
+        path: '/Users/username/Documents/manifests/manifest6',
+        progress: 45,
+        accent: '#ff9800',
+        logs: ['Downloading…', 'Series 2/4', 'Chunk 14/60'],
+        status: 'downloading',
+        playing: true,
+        collapsed: true,
+        stats: { loaded: '2.1K', completed: '900', failed: 1, inProgress: '1.2K', skipped: 0 }
+      },
+      {
+        id: 'src-7',
+        title: 'Manifest 7',
+        path: '/Users/username/Documents/manifests/manifest7',
+        progress: 0,
+        accent: '#607d8b',
+        logs: ['Paused by user'],
+        status: 'paused',
+        playing: false,
+        collapsed: true,
+        stats: { loaded: 0, completed: 0, failed: 0, inProgress: 0, skipped: 0 }
+      },
+      {
+        id: 'src-8',
+        title: 'Manifest 8',
+        path: '/Users/username/Documents/manifests/manifest8',
+        progress: 77,
+        accent: '#2196F3',
+        logs: ['Downloading…', 'File 77/100'],
+        status: 'downloading',
+        playing: true,
+        collapsed: true,
+        stats: { loaded: '3.7K', completed: '2.8K', failed: 3, inProgress: '900', skipped: 5 }
       }
     ];
 
@@ -188,6 +252,12 @@ export class AppComponent implements OnInit {
     }).catch(err => {
       this.status = "Error: " + err;
     });
+  }
+
+  // Handler invoked by the "Add a Manifest" button in the empty state.
+  // Opens the manifests directory selector so the user can pick or add manifests.
+  onAddManifest() {
+    this.onSelectManifestsDirectory();
   }
 
   onFetchFiles() {
@@ -288,16 +358,22 @@ export class AppComponent implements OnInit {
    * @param message The message to display
    * @param type The type of toast: 'success' (green), 'error' (red), 'info' (blue), 'warning' (orange)
    */
-  showToast(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') {
-    if (this.toasts.length >= this.maxToasts) {
-      this.toasts.shift();
-    }
+  showToast(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info', duration: number = 5000) {
+    // Ensure only one toast is visible at a time
+    this.toasts = [];
+
     const toast = {
       id: this.toastIdCounter++,
       message,
       type
     };
+
     this.toasts.push(toast);
+
+    // Auto-hide after `duration` milliseconds unless duration === 0 (persistent)
+    if (duration > 0) {
+      setTimeout(() => this.hideToast(toast.id), duration);
+    }
   }
 
   /**

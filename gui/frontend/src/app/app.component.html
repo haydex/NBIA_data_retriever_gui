@@ -24,7 +24,7 @@
       <div class="section-header">
         <div class="downloads-header-content">
             <div class="downloads-left">
-              <span class="downloads-title">Downloads</span>
+              <span class="downloads-title">Manifests (Downloads)</span>
             </div>
             <div class="downloads-right">
               <div class="source-percentage downloads-percentage">{{overallProgress}}%</div>
@@ -46,59 +46,68 @@
         </div>
       </div>
 
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="sources.length === 0">
+        <div class="empty-state-icon">
+          <span class="material-icons">info</span>
+        </div>
+        <div class="empty-state-text">
+          <div class="empty-state-title">No manifest added yet.</div>
+          <div class="empty-state-subtitle">Select a manifest to start downloading its sources.</div>
+        </div>
+        <button class="add-manifest-btn" (click)="onAddManifest()">
+          Add a Manifest
+        </button>
+      </div>
+
       <!-- Download Sources Cards -->
-      <div class="sources-cards">
-        <div class="source-card" *ngFor="let src of sources" (click)="toggleSourceCollapse(src.id)">
-          <div class="card-header">
-            <div class="card-title-container">
-              <div class="card-title">{{ src.title }}</div>
-              <div class="card-path" *ngIf="src.path">{{ src.path }}</div>
+      <div class="sources-cards" *ngIf="sources.length > 0">
+        <div class="source-card" *ngFor="let src of sources">
+          <div class="card-main" (click)="toggleSourceCollapse(src.id)">
+            <div class="left-area">
+              <div
+                class="ring"
+                [style.--value]="src.progress"
+                [style.--accent]="src.status === 'completed' ? '#4caf50' : (src.playing ? src.accent : 'var(--ring-paused)')"
+                [style.--track]="'var(--ring-track)'"
+                [style.--bg]="'var(--card-bg)'"
+              >
+                <button class="play-pause-btn" (click)="toggleSourcePlay(src.id, $event)" [title]="src.playing ? 'Pause' : 'Play'" aria-label="Toggle play">
+                  <span class="material-icons">{{ src.playing ? 'pause' : 'play_arrow' }}</span>
+                </button>
+                <div class="ring-inner"></div>
+                <div class="ring-label">{{ src.progress }}%</div>
+              </div>
             </div>
-            <!-- Header controls only visible when collapsed to conserve vertical space when collapsed -->
-            <div class="source-controls" *ngIf="src.collapsed">
-              <div class="source-percentage">{{ src.progress }}%</div>
-              <button class="play-pause-small" (click)="toggleSourcePlay(src.id, $event)" [title]="src.playing ? 'Pause' : 'Play'">
-                <span class="material-icons">{{ src.playing ? 'pause' : 'play_arrow' }}</span>
-              </button>
-              <button class="cancel-btn" (click)="cancelSource(src.id); $event.stopPropagation()" title="Cancel and remove">
-                <span class="material-icons">close</span>
-              </button>
-            </div>
-            <div class="source-controls" *ngIf="!src.collapsed">
-              <button class="cancel-btn" (click)="cancelSource(src.id); $event.stopPropagation()" title="Cancel and remove">
-                <span class="material-icons">close</span>
-              </button>
-            </div>
-          </div>
-          <div class="card-body" (click)="$event.stopPropagation()">
-            <!-- Expanded view: circular ring + logs (render as siblings so grid puts them side-by-side) -->
-            <ng-container *ngIf="!src.collapsed">
-              <div class="progress-wrap">
-                <div
-                  class="ring"
-                  [style.--value]="src.progress"
-                  [style.--accent]="src.playing ? src.accent : 'var(--ring-paused)'"
-                  [style.--track]="'var(--ring-track)'"
-                  [style.--bg]="'var(--card-bg)'"
-                >
-                    <!-- play/pause button overlay inside ring -->
-                    <button class="play-pause-btn" (click)="toggleSourcePlay(src.id, $event)" [title]="src.playing ? 'Pause' : 'Play'" aria-label="Toggle play">
-                      <span class="material-icons">{{ src.playing ? 'pause' : 'play_arrow' }}</span>
-                    </button>
-                  <div class="ring-inner"></div>
-                  <div class="ring-label">{{ src.progress }}%</div>
+
+            <div class="right-area" (click)="$event.stopPropagation()">
+              <div class="card-header">
+                <div class="card-title-container">
+                  <div class="card-title">{{ src.title }}</div>
+                  <div class="card-status" [ngClass]="src.status">{{ src.status | titlecase }}</div>
+                  <div class="card-path" *ngIf="src.path">{{ src.path }}</div>
+                  <div class="stats-list" *ngIf="src.stats">
+                    <div class="stat"><span class="stat-value">{{ src.stats.loaded }}</span> <span class="stat-label">Loaded</span></div>
+                    <div class="stat"><span class="stat-value">{{ src.stats.completed }}</span> <span class="stat-label">Completed</span></div>
+                    <div class="stat"><span class="stat-value">{{ src.stats.failed }}</span> <span class="stat-label">Failed</span></div>
+                    <div class="stat"><span class="stat-value">{{ src.stats.inProgress }}</span> <span class="stat-label">In-Progress</span></div>
+                    <div class="stat"><span class="stat-value">{{ src.stats.skipped }}</span> <span class="stat-label">Skipped</span></div>
+                  </div>
+                </div>
+
+                <div class="header-actions">
+                  <button class="cancel-btn" (click)="toggleSourceCollapse(src.id); $event.stopPropagation()" [title]="src.collapsed ? 'Expand' : 'Collapse'">
+                    <span class="material-icons">{{ src.collapsed ? 'expand_more' : 'expand_less' }}</span>
+                  </button>
+                  <button class="cancel-btn" (click)="cancelSource(src.id); $event.stopPropagation()" title="Cancel and remove">
+                    <span class="material-icons">close</span>
+                  </button>
                 </div>
               </div>
-              <div class="card-output">
-                <div *ngFor="let line of src.logs">{{ line }}</div>
-              </div>
-            </ng-container>
-            <!-- Collapsed view: compact linear progress bar, no logs -->
-            <div *ngIf="src.collapsed" class="card-body-collapsed">
-              <div class="linear-progress">
-                <div class="linear-fill" [style.width.%]="src.progress" [style.background]="src.playing ? src.accent : 'var(--ring-paused)'"></div>
-              </div>
             </div>
+          </div>
+          <div *ngIf="!src.collapsed" class="card-output-full">
+            <div *ngFor="let line of src.logs">{{ line }}</div>
           </div>
         </div>
       </div>
@@ -130,40 +139,36 @@
       </div> -->
     </div>
 
-    <!-- Files Location Section -->
+    <!-- Files Location Section (Add a Manifest) -->
     <div class="grid-section files-section" [class.collapsed]="filesCollapsed">
       <div class="section-header" (click)="filesCollapsed = !filesCollapsed">
-        <span>Files Location</span>
+        <span>Add a Manifest</span>
   <span class="material-icons collapse-icon">{{ filesCollapsed ? 'expand_more' : 'expand_less' }}</span>
       </div>
       <div class="section-content">
+        <!-- Manifest directory first -->
         <div class="file-input-row">
-          <!-- <label class="file-label">Path/to/input/</label> -->
-          <input type="text" [(ngModel)]="inputFilePath" class="file-input" placeholder="Path/to/the/input/directory">
-          <button (click)="onSelectInputFile()" class="browse-btn" title="Browse">
-            <span class="material-icons">folder_open</span>
-          </button>
-        </div>
-        <div class="file-input-row">
-          <!-- <label class="file-label">Path/to/output/</label> -->
-          <input type="text" [(ngModel)]="outputDirPath" class="file-input" placeholder="Path/to/the/output/directory">
-          <button (click)="onSelectOutputDirectory()" class="browse-btn" title="Browse">
-            <span class="material-icons">folder_open</span>
-          </button>
-        </div>
-        <div class="file-input-row">
-          <!-- <label class="file-label">Path/to/the/manifests/</label> -->
+          <label class="file-label">Manifest Directory</label>
           <input type="text" [(ngModel)]="manifestsDirPath" class="file-input" placeholder="Path/to/the/manifests/directory">
           <button (click)="onSelectManifestsDirectory()" class="browse-btn" title="Browse">
+            <span class="material-icons">folder_open</span>
+          </button>
+        </div>
+
+        <!-- Output directory next -->
+        <div class="file-input-row">
+          <label class="file-label">Output Directory</label>
+          <input type="text" [(ngModel)]="outputDirPath" class="file-input" placeholder="Path/to/the/output/directory">
+          <button (click)="onSelectOutputDirectory()" class="browse-btn" title="Browse">
             <span class="material-icons">folder_open</span>
           </button>
         </div>
       </div>
       <!-- Bottom Action Bar -->
       <div class="action-bar">
-        <button (click)="onFetchFiles()" class="fetch-btn">
-          <span class="material-icons">file_download</span>
-          Fetch Files
+        <button (click)="onAddManifest()" class="add-manifest-action">
+          <span class="material-icons">add</span>
+          Add Manifest
         </button>
       </div>
     </div>
@@ -171,21 +176,21 @@
     <!-- Advanced Settings Section -->
     <div class="grid-section settings-section" [class.collapsed]="settingsCollapsed">
       <div class="section-header" (click)="settingsCollapsed = !settingsCollapsed">
-        <span>Advanced Settings</span>
+        <span>Settings</span>
   <span class="material-icons collapse-icon">{{ settingsCollapsed ? 'expand_more' : 'expand_less' }}</span>
       </div>
       <div class="section-content">
         <div class="settings-grid">
           <div class="setting-item">
-            <label class="setting-label">Max Connections:</label>
+            <label class="setting-label">Max Connections</label>
             <input type="number" [(ngModel)]="maxConnections" min="1" class="setting-input">
           </div>
           <div class="setting-item">
-            <label class="setting-label">Max Retries:</label>
+            <label class="setting-label">Max Retries</label>
             <input type="number" [(ngModel)]="maxRetries" min="0" class="setting-input">
           </div>
           <div class="setting-item">
-            <label class="setting-label">Simultaneous Downloads:</label>
+            <label class="setting-label">Simultaneous Downloads</label>
             <input type="number" [(ngModel)]="simultaneousDownloads" min="1" class="setting-input">
           </div>
           <div class="setting-item">
