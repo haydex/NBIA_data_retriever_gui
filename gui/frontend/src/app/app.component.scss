@@ -289,9 +289,9 @@
 .app-container.dark-mode .card-output-full { background: #0d0d0d; border-color: #333; color: #cfcfcf; }
 
 .stats-list { display: flex; gap: 18px; align-items: baseline; margin-top: 6px; flex-wrap: wrap; }
-.stat { display: flex; gap: 8px; align-items: baseline; font-size: 14px; color: #bdbdbd; }
-.stat-value { font-weight: 800; color: #fff; }
-.stat-label { color: #bdbdbd; font-size: 13px; }
+.stat { display: flex; gap: 8px; align-items: baseline; font-size: 14px; color: #777; }
+.stat-value { font-weight: 800; color: #333; }
+.stat-label { color: #777; font-size: 13px; }
 .app-container.dark-mode .stat { color: #cfcfcf; }
 .app-container.dark-mode .stat-value { color: #ffffff; }
 
