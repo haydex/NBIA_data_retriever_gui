@@ -96,7 +96,7 @@
                 </div>
 
                 <div class="header-actions">
-                  <button class="cancel-btn" (click)="toggleSourceCollapse(src.id); $event.stopPropagation()" [title]="src.collapsed ? 'Expand' : 'Collapse'">
+                  <button class="expand-btn" (click)="toggleSourceCollapse(src.id); $event.stopPropagation()" [title]="src.collapsed ? 'Expand' : 'Collapse'">
                     <span class="material-icons">{{ src.collapsed ? 'expand_more' : 'expand_less' }}</span>
                   </button>
                   <button class="cancel-btn" (click)="cancelSource(src.id); $event.stopPropagation()" title="Cancel and remove">

@@ -206,6 +206,10 @@
 .icon-btn .material-icons { font-size: 20px; color: #666; }
 .icon-btn:hover { background: rgba(0,0,0,0.06); }
 
+.expand-btn { background: #f3f4f5; border: 1px solid rgba(0,0,0,0.06); width: 36px; height: 36px; padding: 0; border-radius: 50%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 1px 0 rgba(0,0,0,0.02); transition: background-color 0.2s ease, transform 0.2s ease; }
+.expand-btn .material-icons { font-size: 20px; color: #383838; }
+.expand-btn:hover { transform: scale(1.04); background: #ececec; }
+
 .cancel-btn { background: #f3f4f5; border: 1px solid rgba(0,0,0,0.06); width: 36px; height: 36px; padding: 0; border-radius: 50%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
 .cancel-btn .material-icons { font-size: 20px; color: #383838; }
 .cancel-btn:hover { transform: scale(1.04); background: rgba(255,82,82,0.08); }
@@ -233,9 +237,9 @@
 .global-cancel-btn:hover { transform: scale(1.02); background: rgba(255,82,82,0.08); }
 .global-cancel-btn:hover .material-icons { color: #ff5252; }
 
-.app-container.dark-mode .global-play-btn, .app-container.dark-mode .global-cancel-btn, .app-container.dark-mode .cancel-btn, .app-container.dark-mode .play-pause-small { background: #3a3a3a; }
+.app-container.dark-mode .global-play-btn, .app-container.dark-mode .global-cancel-btn, .app-container.dark-mode .cancel-btn, .app-container.dark-mode .play-pause-small, .app-container.dark-mode .expand-btn { background: #3a3a3a; }
 .app-container.dark-mode .play-pause-btn { background: transparent; }
-.app-container.dark-mode .play-pause-btn .material-icons, .app-container.dark-mode .play-pause-small .material-icons, .app-container.dark-mode .global-play-btn .material-icons, .app-container.dark-mode .global-cancel-btn .material-icons, .app-container.dark-mode .cancel-btn .material-icons { color: #e0e0e0; }
+.app-container.dark-mode .play-pause-btn .material-icons, .app-container.dark-mode .play-pause-small .material-icons, .app-container.dark-mode .global-play-btn .material-icons, .app-container.dark-mode .global-cancel-btn .material-icons, .app-container.dark-mode .cancel-btn .material-icons, .app-container.dark-mode .expand-btn .material-icons { color: #e0e0e0; }
 
 .ring { --size: 96px; --thickness: 8px; width: var(--size); height: var(--size); border-radius: 50%; position: relative; background: conic-gradient(var(--accent, #4caf50) calc(var(--value, 0) * 1%), var(--track, #e9ecef) 0); display: grid; place-items: center; }
 .ring::before, .ring::after { content: ""; position: absolute; width: var(--thickness); height: var(--thickness); border-radius: 50%; background: var(--accent, #4caf50); top: 50%; left: 50%; transform: translate(-50%, -50%) translateY(calc((var(--size) / -2) + (var(--thickness) / 2))); }
