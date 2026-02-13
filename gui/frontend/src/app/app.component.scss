@@ -8,8 +8,8 @@
 }
 
 .header {
-  background: #0c2f5a;
-  border: 2px solid #1f8cff;
+  background: #c7ddf4;
+  border: 2px solid #80b4e9;
   padding: 8px 12px;
   display: flex;
   flex-direction: column;
@@ -29,7 +29,7 @@
   width: 0;
   background: #0f4f99;
   border-radius: 10px;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, opacity 0.2s ease;
   z-index: 0;
 }
 
@@ -62,6 +62,7 @@
 }
 
 .header-progress-percentage {
+  display: none;
   font-weight: 700;
   font-size: 28px;
   line-height: 1;
@@ -89,7 +90,7 @@
   align-items: center;
   gap: 16px;
   font-size: 14px;
-  color: #ffffff;
+  color: #111111;
 }
 
 .theme-toggle {
@@ -107,10 +108,11 @@
 
 .theme-toggle .material-icons {
   font-size: 24px;
+  color: inherit;
 }
 
 .theme-toggle:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.08);
 }
 
 .header-settings-btn {
@@ -132,7 +134,7 @@
 }
 
 .header-settings-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.08);
 }
 
 .user-info {
@@ -1181,6 +1183,10 @@
   border: 2px solid #1f8cff;
 }
 
+.app-container.dark-mode .header-right {
+  color: #ffffff;
+}
+
 .app-container.dark-mode .user-name {
   color: #e0e0e0;
 }
@@ -1529,10 +1535,27 @@
   }
 }
 
+.floating-add-manifest-gradient {
+  position: fixed;
+  opacity: 0.5;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 200px;
+  background: linear-gradient(to top,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(255, 255, 255, 0.86) 30%,
+      rgba(255, 255, 255, 0.55) 60%,
+      rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+  z-index: 2400;
+}
+
 .floating-add-manifest-btn {
   position: fixed;
   left: 50%;
-  bottom: 18px;
+  bottom: 30px;
   transform: translateX(-50%);
   width: 72px;
   height: 72px;
@@ -1545,7 +1568,7 @@
   justify-content: center;
   cursor: pointer;
   z-index: 2500;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: none;
 }
 
 .floating-add-manifest-btn .material-icons {
@@ -1642,6 +1665,14 @@
 .app-container.dark-mode .floating-add-manifest-btn {
   background: #0078e7;
   border-color: rgba(255, 255, 255, 0.25);
+}
+
+.app-container.dark-mode .floating-add-manifest-gradient {
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.98) 0%,
+      rgba(0, 0, 0, 0.86) 30%,
+      rgba(0, 0, 0, 0.55) 60%,
+      rgba(0, 0, 0, 0) 100%);
 }
 
 .app-container.dark-mode .floating-add-manifest-btn:hover {
