@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FetchFiles, OpenInputFileDialog, OpenOutputDirectoryDialog, RunCLIFetch } from '../../wailsjs/go/main/App';
 
@@ -25,8 +25,6 @@ export class AppComponent implements OnInit {
   outputDirPath = '';
   manifestsDirPath = '';
 
-  outputLogs: string[] = [];
-
   showAdvanced = false;
   maxConnections = 8;
   maxRetries = 3;
@@ -34,9 +32,8 @@ export class AppComponent implements OnInit {
   skipExisting = true;
   downloadInParallel = true;
 
-  filesCollapsed = false;
-  settingsCollapsed = true;
-  outputCollapsed = true;
+  manifestModalOpen = false;
+  settingsModalOpen = false;
 
   isDarkMode = false;
 
@@ -204,7 +201,7 @@ export class AppComponent implements OnInit {
     if (s) {
       s.playing = !s.playing;
       this.overallPlaying = this.sources.every(x => x.playing);
-      
+
       if (!s.playing) {
         this.showToast(`${s.title} download paused.`, 'warning');
       }
@@ -232,6 +229,38 @@ export class AppComponent implements OnInit {
 
   toggleDarkMode() {
     this.isDarkMode = !this.isDarkMode;
+  }
+
+  openSettingsModal() {
+    this.settingsModalOpen = true;
+  }
+
+  closeSettingsModal() {
+    this.settingsModalOpen = false;
+  }
+
+  openManifestModal() {
+    this.manifestModalOpen = true;
+  }
+
+  closeManifestModal() {
+    this.manifestModalOpen = false;
+  }
+
+  onManifestSubmit() {
+    this.onAddManifest();
+    this.closeManifestModal();
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey() {
+    if (this.manifestModalOpen) {
+      this.closeManifestModal();
+      return;
+    }
+    if (this.settingsModalOpen) {
+      this.closeSettingsModal();
+    }
   }
 
   onSelectOutputDirectory() {
@@ -289,16 +318,13 @@ export class AppComponent implements OnInit {
     const cmdStr = parts.join(' ');
 
     this.status = 'Running: ' + cmdStr;
-    this.appendLog(this.status);
 
     RunCLIFetch(this.inputFilePath, this.outputDirPath, this.maxConnections, this.maxRetries, this.simultaneousDownloads, this.skipExisting, this.downloadInParallel)
       .then((result: string) => {
         this.status = result;
-        this.appendLog(result);
       })
       .catch(err => {
         this.status = "Error: " + err;
-        this.appendLog(this.status);
       });
   }
 
@@ -335,10 +361,6 @@ export class AppComponent implements OnInit {
     if (s) {
       s.logs.push(line);
     }
-  }
-
-  appendLog(line: string) {
-    this.outputLogs.push(line);
   }
 
   updateOverallProgress() {

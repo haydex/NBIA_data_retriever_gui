@@ -1,52 +1,30 @@
 <div class="app-container" [class.dark-mode]="isDarkMode">
-  
-  <!-- Header -->
+
   <div class="header">
-    <div class="header-left">
-      <img [src]="isDarkMode ? 'assets/app-title-light.svg' : 'assets/app-title-dark.svg'" alt="TCIA" class="app-icon">
-    </div>
-    <div class="header-right">
-      <button class="theme-toggle" (click)="toggleDarkMode()" [title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
-  <span class="material-icons">{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</span>
-      </button>
-      <div class="user-info">
-        <div class="user-name">Human</div>
-        <div class="user-role">System Admin</div>
+    <div class="header-progress-bg" [style.width.%]="overallProgress"
+      [style.background]="allPaused ? '#5e6b7a' : '#0f4f99'"></div>
+    <div class="header-top">
+      <div class="header-left">
+        <img [src]="isDarkMode ? 'assets/app-title-light.svg' : 'assets/app-title-dark.svg'" alt="TCIA"
+          class="app-icon">
+      </div>
+      <div class="header-center">
+        <div class="header-progress-percentage">{{overallProgress}}%</div>
+      </div>
+      <div class="header-right">
+        <button class="theme-toggle" (click)="toggleDarkMode()"
+          [title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+          <span class="material-icons">{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</span>
+        </button>
+        <button class="header-settings-btn" (click)="openSettingsModal()" title="Open settings">
+          <span class="material-icons">settings</span>
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Main Grid Layout -->
   <div class="main-grid">
-    
-    <!-- Downloads Section -->
     <div class="grid-section downloads-section">
-      <div class="section-header">
-        <div class="downloads-header-content">
-            <div class="downloads-left">
-              <span class="downloads-title">Manifests (Downloads)</span>
-            </div>
-            <div class="downloads-right">
-              <div class="source-percentage downloads-percentage">{{overallProgress}}%</div>
-              <!-- Global play/pause button -->
-              <button class="play-pause-small" (click)="toggleOverallPlay()" [title]="overallPlaying ? 'Pause all' : 'Play all'">
-                <span class="material-icons">{{ overallPlaying ? 'pause' : 'play_arrow' }}</span>
-              </button>
-              <!-- Global cancel button -->
-              <button class="cancel-btn" (click)="cancelAllDownloads()" title="Cancel all downloads">
-                <span class="material-icons">close</span>
-              </button>
-            </div>
-        </div>
-        <div class="downloads-progress-bar">
-          <div
-            class="downloads-progress-fill"
-            [style.width.%]="overallProgress"
-            [style.background]="allPaused ? 'var(--ring-paused)' : 'var(--downloads-accent)'"></div>
-        </div>
-      </div>
-
-      <!-- Empty State -->
       <div class="empty-state" *ngIf="sources.length === 0">
         <div class="empty-state-icon">
           <span class="material-icons">info</span>
@@ -55,24 +33,20 @@
           <div class="empty-state-title">No manifest added yet.</div>
           <div class="empty-state-subtitle">Select a manifest to start downloading its sources.</div>
         </div>
-        <button class="add-manifest-btn" (click)="onAddManifest()">
+        <button class="add-manifest-btn" (click)="openManifestModal()">
           Add a Manifest
         </button>
       </div>
 
-      <!-- Download Sources Cards -->
       <div class="sources-cards" *ngIf="sources.length > 0">
         <div class="source-card" *ngFor="let src of sources">
           <div class="card-main" (click)="toggleSourceCollapse(src.id)">
             <div class="left-area">
-              <div
-                class="ring"
-                [style.--value]="src.progress"
+              <div class="ring" [style.--value]="src.progress"
                 [style.--accent]="src.status === 'completed' ? '#4caf50' : (src.playing ? src.accent : 'var(--ring-paused)')"
-                [style.--track]="'var(--ring-track)'"
-                [style.--bg]="'var(--card-bg)'"
-              >
-                <button class="play-pause-btn" (click)="toggleSourcePlay(src.id, $event)" [title]="src.playing ? 'Pause' : 'Play'" aria-label="Toggle play">
+                [style.--track]="'var(--ring-track)'" [style.--bg]="'var(--card-bg)'">
+                <button class="play-pause-btn" (click)="toggleSourcePlay(src.id, $event)"
+                  [title]="src.playing ? 'Pause' : 'Play'" aria-label="Toggle play">
                   <span class="material-icons">{{ src.playing ? 'pause' : 'play_arrow' }}</span>
                 </button>
                 <div class="ring-inner"></div>
@@ -87,19 +61,26 @@
                   <div class="card-status" [ngClass]="src.status">{{ src.status | titlecase }}</div>
                   <div class="card-path" *ngIf="src.path">{{ src.path }}</div>
                   <div class="stats-list" *ngIf="src.stats">
-                    <div class="stat"><span class="stat-value">{{ src.stats.loaded }}</span> <span class="stat-label">Loaded</span></div>
-                    <div class="stat"><span class="stat-value">{{ src.stats.completed }}</span> <span class="stat-label">Completed</span></div>
-                    <div class="stat"><span class="stat-value">{{ src.stats.failed }}</span> <span class="stat-label">Failed</span></div>
-                    <div class="stat"><span class="stat-value">{{ src.stats.inProgress }}</span> <span class="stat-label">In-Progress</span></div>
-                    <div class="stat"><span class="stat-value">{{ src.stats.skipped }}</span> <span class="stat-label">Skipped</span></div>
+                    <div class="stat"><span class="stat-value">{{ src.stats.loaded }}</span> <span
+                        class="stat-label">Loaded</span></div>
+                    <div class="stat"><span class="stat-value">{{ src.stats.completed }}</span> <span
+                        class="stat-label">Completed</span></div>
+                    <div class="stat"><span class="stat-value">{{ src.stats.failed }}</span> <span
+                        class="stat-label">Failed</span></div>
+                    <div class="stat"><span class="stat-value">{{ src.stats.inProgress }}</span> <span
+                        class="stat-label">In-Progress</span></div>
+                    <div class="stat"><span class="stat-value">{{ src.stats.skipped }}</span> <span
+                        class="stat-label">Skipped</span></div>
                   </div>
                 </div>
 
                 <div class="header-actions">
-                  <button class="expand-btn" (click)="toggleSourceCollapse(src.id); $event.stopPropagation()" [title]="src.collapsed ? 'Expand' : 'Collapse'">
+                  <button class="expand-btn" (click)="toggleSourceCollapse(src.id); $event.stopPropagation()"
+                    [title]="src.collapsed ? 'Expand' : 'Collapse'">
                     <span class="material-icons">{{ src.collapsed ? 'expand_more' : 'expand_less' }}</span>
                   </button>
-                  <button class="cancel-btn" (click)="cancelSource(src.id); $event.stopPropagation()" title="Cancel and remove">
+                  <button class="cancel-btn" (click)="cancelSource(src.id); $event.stopPropagation()"
+                    title="Cancel and remove">
                     <span class="material-icons">close</span>
                   </button>
                 </div>
@@ -111,51 +92,32 @@
           </div>
         </div>
       </div>
-      
-      <!-- Table Header -->
-      <!-- <div class="table-header">
-        <div class="table-cell">Collection</div>
-        <div class="table-cell">Patient ID</div>
-        <div class="table-cell">Series UID</div>
-        <div class="table-cell">Size</div>
-        <div class="table-cell">No. of Images</div>
-        <div class="table-cell">Progress</div>
-        <div class="table-cell">Details</div>
-        <div class="table-cell">Status</div>
-      </div> -->
-      
-      <!-- Table Rows -->
-      <!-- <div class="table-body">
-        <div class="table-row" *ngFor="let item of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]; let i = index">
-          <div class="table-cell">—</div>
-          <div class="table-cell">—</div>
-          <div class="table-cell">—</div>
-          <div class="table-cell">—</div>
-          <div class="table-cell">—</div>
-          <div class="table-cell">—</div>
-          <div class="table-cell">—</div>
-          <div class="table-cell">—</div>
-        </div>
-      </div> -->
     </div>
 
-    <!-- Files Location Section (Add a Manifest) -->
-    <div class="grid-section files-section" [class.collapsed]="filesCollapsed">
-      <div class="section-header" (click)="filesCollapsed = !filesCollapsed">
+  </div>
+
+  <button class="floating-add-manifest-btn" (click)="openManifestModal()" title="Add Manifest">
+    <span class="material-icons">add</span>
+  </button>
+
+  <div class="manifest-modal-backdrop" *ngIf="manifestModalOpen" (click)="closeManifestModal()">
+    <div class="manifest-modal" (click)="$event.stopPropagation()">
+      <div class="manifest-modal-header">
         <span>Add a Manifest</span>
-  <span class="material-icons collapse-icon">{{ filesCollapsed ? 'expand_more' : 'expand_less' }}</span>
+        <button class="manifest-modal-close" (click)="closeManifestModal()" title="Close">
+          <span class="material-icons">close</span>
+        </button>
       </div>
-      <div class="section-content">
-        <!-- Manifest directory first -->
+      <div class="manifest-modal-content">
         <div class="file-input-row">
           <label class="file-label">Manifest Directory</label>
-          <input type="text" [(ngModel)]="manifestsDirPath" class="file-input" placeholder="Path/to/the/manifests/directory">
+          <input type="text" [(ngModel)]="manifestsDirPath" class="file-input"
+            placeholder="Path/to/the/manifests/directory">
           <button (click)="onSelectManifestsDirectory()" class="browse-btn" title="Browse">
             <span class="material-icons">folder_open</span>
           </button>
         </div>
 
-        <!-- Output directory next -->
         <div class="file-input-row">
           <label class="file-label">Output Directory</label>
           <input type="text" [(ngModel)]="outputDirPath" class="file-input" placeholder="Path/to/the/output/directory">
@@ -164,22 +126,24 @@
           </button>
         </div>
       </div>
-      <!-- Bottom Action Bar -->
-      <div class="action-bar">
-        <button (click)="onAddManifest()" class="add-manifest-action">
+      <div class="action-bar manifest-modal-action-bar">
+        <button (click)="onManifestSubmit()" class="add-manifest-action">
           <span class="material-icons">add</span>
           Add Manifest
         </button>
       </div>
     </div>
+  </div>
 
-    <!-- Advanced Settings Section -->
-    <div class="grid-section settings-section" [class.collapsed]="settingsCollapsed">
-      <div class="section-header" (click)="settingsCollapsed = !settingsCollapsed">
+  <div class="settings-modal-backdrop" *ngIf="settingsModalOpen" (click)="closeSettingsModal()">
+    <div class="settings-modal" (click)="$event.stopPropagation()">
+      <div class="settings-modal-header">
         <span>Settings</span>
-  <span class="material-icons collapse-icon">{{ settingsCollapsed ? 'expand_more' : 'expand_less' }}</span>
+        <button class="settings-modal-close" (click)="closeSettingsModal()" title="Close settings">
+          <span class="material-icons">close</span>
+        </button>
       </div>
-      <div class="section-content">
+      <div class="settings-modal-content">
         <div class="settings-grid">
           <div class="setting-item">
             <label class="setting-label">Max Connections</label>
@@ -208,158 +172,14 @@
         </div>
       </div>
     </div>
-
-    <!-- Output Section -->
-    <div class="grid-section output-section" [class.collapsed]="outputCollapsed">
-      <div class="section-header" (click)="outputCollapsed = !outputCollapsed">
-        <span>Output</span>
-  <span class="material-icons collapse-icon">{{ outputCollapsed ? 'expand_more' : 'expand_less' }}</span>
-      </div>
-      <div class="output-content">
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div><div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-        <div class="output-text">{{ status }}</div>
-      </div>
-    </div>
-
   </div>
 
-  <!-- Toast Notifications -->
   <div class="toast-container">
     <div class="toast" [class]="'toast-' + toast.type" *ngFor="let toast of toasts" [@slideIn]>
       <div class="toast-content">
         <span class="material-icons toast-icon">
-          {{ toast.type === 'success' ? 'check_circle' : toast.type === 'error' ? 'error' : toast.type === 'warning' ? 'warning' : 'info' }}
+          {{ toast.type === 'success' ? 'check_circle' : toast.type === 'error' ? 'error' : toast.type === 'warning' ?
+          'warning' : 'info' }}
         </span>
         <span class="toast-message">{{ toast.message }}</span>
       </div>
