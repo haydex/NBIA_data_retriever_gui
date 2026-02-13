@@ -1537,7 +1537,7 @@
 
 .floating-add-manifest-gradient {
   position: fixed;
-  opacity: 0.5;
+  opacity: 0.9;
   left: 0;
   right: 0;
   bottom: 0;
@@ -1669,10 +1669,10 @@
 
 .app-container.dark-mode .floating-add-manifest-gradient {
   background: linear-gradient(to top,
-      rgba(0, 0, 0, 0.98) 0%,
-      rgba(0, 0, 0, 0.86) 30%,
-      rgba(0, 0, 0, 0.55) 60%,
-      rgba(0, 0, 0, 0) 100%);
+      rgba(28, 28, 28, 0.98) 0%,
+      rgba(28, 28, 28, 0.86) 30%,
+      rgba(28, 28, 28, 0.55) 60%,
+      rgba(28, 28, 28, 0) 100%);
 }
 
 .app-container.dark-mode .floating-add-manifest-btn:hover {
