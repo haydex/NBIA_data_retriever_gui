@@ -9,7 +9,7 @@
 
 .header {
   background: #c7ddf4;
-  border: 2px solid #80b4e9;
+  border: 1px solid rgba(64, 136, 214, 0.5);
   padding: 8px 12px;
   display: flex;
   flex-direction: column;
@@ -23,13 +23,14 @@
 
 .header-progress-bg {
   position: absolute;
-  top: 0;
-  left: 0;
   bottom: 0;
+  left: 0;
+  top: auto;
   width: 0;
-  background: #0f4f99;
-  border-radius: 10px;
-  transition: width 0.3s ease, opacity 0.2s ease;
+  height: 2px;
+  background: #2196F3;
+  border-radius: 999px;
+  transition: width 0.3s ease;
   z-index: 0;
 }
 
@@ -916,8 +917,8 @@
 }
 
 .app-container.dark-mode .card-output-full {
-  background: #0d0d0d;
-  border-color: #333;
+  background: #1a1a1a;
+  border-color: #3a3a3a;
   color: #cfcfcf;
 }
 
@@ -1266,7 +1267,7 @@
 
 .app-container.dark-mode .header {
   background-color: #0c2f5a;
-  border: 2px solid #1f8cff;
+  border: 1px solid rgba(61, 156, 245, 0.55);
 }
 
 .app-container.dark-mode .header-right {
@@ -1563,8 +1564,8 @@
 }
 
 .app-container.dark-mode .card-output {
-  background: #0d0d0d;
-  border-color: #333;
+  background: #1a1a1a;
+  border-color: #3a3a3a;
   color: #cfcfcf;
 }
 

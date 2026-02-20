@@ -1,9 +1,7 @@
 <div class="app-container" [class.dark-mode]="isDarkMode">
 
   <div class="header">
-    <div class="header-progress-bg" [style.width.%]="overallProgress"
-      [style.background]="isDarkMode ? (allPaused ? '#5e6b7a' : '#0f4f99') : (allPaused ? '#9ab9da' : '#5d9fe7')"
-      [style.opacity]="isDarkMode ? 0.92 : 0.4"></div>
+    <div class="header-progress-bg" [style.width.%]="overallProgress"></div>
     <div class="header-top">
       <div class="header-left">
         <img [src]="isDarkMode ? 'assets/app-title-light.svg' : 'assets/app-title-dark.svg'" alt="TCIA"
