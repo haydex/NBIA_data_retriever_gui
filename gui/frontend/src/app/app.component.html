@@ -106,34 +106,37 @@
   <div class="manifest-modal-backdrop" *ngIf="manifestModalOpen" (click)="closeManifestModal()">
     <div class="manifest-modal" (click)="$event.stopPropagation()">
       <div class="manifest-modal-header">
-        <span>Add a Manifest</span>
+        <span class="manifest-modal-title">Add a Manifest</span>
         <button class="manifest-modal-close" (click)="closeManifestModal()" title="Close">
-          <span class="material-icons">close</span>
+          <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="manifest-modal-content">
-        <div class="file-input-row">
-          <label class="file-label">Manifest Directory</label>
-          <input type="text" [(ngModel)]="manifestsDirPath" class="file-input"
-            placeholder="Path/to/the/manifests/directory">
-          <button (click)="onSelectManifestsDirectory()" class="browse-btn" title="Browse">
-            <span class="material-icons">folder_open</span>
-          </button>
+        <div class="manifest-field-group">
+          <label class="manifest-field-label">Input</label>
+          <div class="manifest-field-row">
+            <input type="text" [(ngModel)]="manifestsDirPath" class="manifest-file-input"
+              placeholder="/Path/to/input/folder">
+            <button (click)="onSelectManifestsDirectory()" class="manifest-browse-btn" title="Browse input folder">
+              <span class="material-icons">folder_open</span>
+            </button>
+          </div>
         </div>
 
-        <div class="file-input-row">
-          <label class="file-label">Output Directory</label>
-          <input type="text" [(ngModel)]="outputDirPath" class="file-input" placeholder="Path/to/the/output/directory">
-          <button (click)="onSelectOutputDirectory()" class="browse-btn" title="Browse">
-            <span class="material-icons">folder_open</span>
-          </button>
+        <div class="manifest-field-group">
+          <label class="manifest-field-label">Output</label>
+          <div class="manifest-field-row">
+            <input type="text" [(ngModel)]="outputDirPath" class="manifest-file-input"
+              placeholder="/Path/to/output/folder">
+            <button (click)="onSelectOutputDirectory()" class="manifest-browse-btn" title="Browse output folder">
+              <span class="material-icons">folder_open</span>
+            </button>
+          </div>
         </div>
       </div>
-      <div class="action-bar manifest-modal-action-bar">
-        <button (click)="onManifestSubmit()" class="add-manifest-action">
-          <span class="material-icons">add</span>
-          Add Manifest
-        </button>
+      <div class="manifest-modal-action-bar">
+        <button (click)="onManifestSubmit()" class="add-manifest-action">Add Manifest</button>
+        <button (click)="closeManifestModal()" class="cancel-manifest-action">Cancel</button>
       </div>
     </div>
   </div>
