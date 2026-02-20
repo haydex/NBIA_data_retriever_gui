@@ -20,6 +20,9 @@
         <button class="header-settings-btn" (click)="openSettingsModal()" title="Open settings">
           <span class="material-icons">settings</span>
         </button>
+        <button class="header-add-manifest-btn" (click)="openManifestModal()" title="Add a Manifest">
+          <span class="material-icons">add</span>
+        </button>
       </div>
     </div>
   </div>
@@ -111,12 +114,6 @@
     </div>
 
   </div>
-
-  <div class="floating-add-manifest-gradient" aria-hidden="true"></div>
-
-  <button class="floating-add-manifest-btn" (click)="openManifestModal()" title="Add a Manifest">
-    <span class="material-icons">add</span>
-  </button>
 
   <div class="manifest-modal-backdrop" *ngIf="manifestModalOpen" (click)="closeManifestModal()">
     <div class="manifest-modal" (click)="$event.stopPropagation()">

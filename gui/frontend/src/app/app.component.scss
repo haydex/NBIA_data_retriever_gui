@@ -176,6 +176,29 @@
   background: rgba(0, 0, 0, 0.08);
 }
 
+.header-add-manifest-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #0078e7;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.header-add-manifest-btn .material-icons {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.header-add-manifest-btn:hover {
+  background: #0066cc;
+}
+
 .user-info {
   display: flex;
   flex-direction: column;
@@ -1302,6 +1325,14 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
+.app-container.dark-mode .header-add-manifest-btn {
+  background: #0078e7;
+}
+
+.app-container.dark-mode .header-add-manifest-btn:hover {
+  background: #0066cc;
+}
+
 .app-container.dark-mode .main-grid {
   background-color: #1a1a1a;
 }
@@ -1651,51 +1682,6 @@
   }
 }
 
-.floating-add-manifest-gradient {
-  position: fixed;
-  opacity: 0.9;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 200px;
-  background: linear-gradient(to top,
-      rgba(255, 255, 255, 0.98) 0%,
-      rgba(255, 255, 255, 0.86) 30%,
-      rgba(255, 255, 255, 0.55) 60%,
-      rgba(255, 255, 255, 0) 100%);
-  pointer-events: none;
-  z-index: 2400;
-}
-
-.floating-add-manifest-btn {
-  position: fixed;
-  left: 50%;
-  bottom: 30px;
-  transform: translateX(-50%);
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  background: #0078e7;
-  color: white;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 2500;
-  box-shadow: none;
-}
-
-.floating-add-manifest-btn .material-icons {
-  font-size: 38px;
-  line-height: 1;
-}
-
-.floating-add-manifest-btn:hover {
-  background: #0066cc;
-}
-
 .manifest-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -1890,23 +1876,6 @@
     min-width: 42%;
     font-size: 16px;
   }
-}
-
-.app-container.dark-mode .floating-add-manifest-btn {
-  background: #0078e7;
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
-.app-container.dark-mode .floating-add-manifest-gradient {
-  background: linear-gradient(to top,
-      rgba(28, 28, 28, 0.98) 0%,
-      rgba(28, 28, 28, 0.86) 30%,
-      rgba(28, 28, 28, 0.55) 60%,
-      rgba(28, 28, 28, 0) 100%);
-}
-
-.app-container.dark-mode .floating-add-manifest-btn:hover {
-  background: #0066cc;
 }
 
 .app-container.dark-mode .manifest-modal {
