@@ -67,14 +67,26 @@
   background: rgba(0, 0, 0, 0.03);
 }
 
+.overall-stats-bar .stats-item:first-child {
+  background: #0078e7;
+}
+
 .overall-stats-bar .stats-value {
   font-weight: 700;
   color: #2f2f2f;
 }
 
+.overall-stats-bar .stats-item:first-child .stats-value {
+  color: #ffffff;
+}
+
 .overall-stats-bar .stats-label {
   font-weight: 400;
   color: #666;
+}
+
+.overall-stats-bar .stats-item:first-child .stats-label {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .overall-stats-bar .stats-sep {
@@ -1282,12 +1294,24 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
+.app-container.dark-mode .overall-stats-bar .stats-item:first-child {
+  background: #0078e7;
+}
+
 .app-container.dark-mode .overall-stats-bar .stats-value {
   color: #f0f0f0;
 }
 
+.app-container.dark-mode .overall-stats-bar .stats-item:first-child .stats-value {
+  color: #ffffff;
+}
+
 .app-container.dark-mode .overall-stats-bar .stats-label {
   color: #a7a7a7;
+}
+
+.app-container.dark-mode .overall-stats-bar .stats-item:first-child .stats-label {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 @media (max-width: 720px) {
