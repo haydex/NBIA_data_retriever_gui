@@ -893,7 +893,7 @@
 }
 
 .app-container.dark-mode .card-output-full {
-  background: #0d0d0d;
+  background: var(--dark-mode-app-bg);
   border-color: #333;
   color: #cfcfcf;
 }
@@ -1238,7 +1238,8 @@
 }
 
 .app-container.dark-mode {
-  background-color: #1a1a1a;
+  --dark-mode-app-bg: #1a1a1a;
+  background-color: var(--dark-mode-app-bg);
 }
 
 .app-container.dark-mode .header {
@@ -1532,7 +1533,7 @@
 }
 
 .app-container.dark-mode .card-output {
-  background: #0d0d0d;
+  background: var(--dark-mode-app-bg);
   border-color: #333;
   color: #cfcfcf;
 }
