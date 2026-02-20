@@ -38,6 +38,7 @@ export class AppComponent implements OnInit {
   isDarkMode = false;
 
   overallProgress = 0;
+  overallCancelled = 0;
 
   sources: Array<{
     id: string;
@@ -213,6 +214,7 @@ export class AppComponent implements OnInit {
     if (index !== -1) {
       const sourceName = this.sources[index].title;
       this.sources.splice(index, 1);
+      this.overallCancelled += 1;
       this.updateOverallProgress();
       if (this.sources.length === 0) {
         this.overallPlaying = false;
@@ -222,6 +224,7 @@ export class AppComponent implements OnInit {
   }
 
   cancelAllDownloads() {
+    this.overallCancelled += this.sources.length;
     this.sources = [];
     this.overallPlaying = false;
     this.overallProgress = 0;
@@ -345,6 +348,7 @@ export class AppComponent implements OnInit {
       collapsed: (s as any).collapsed ?? (idx !== 0)
     }));
     this.sources = list;
+    this.overallCancelled = 0;
     this.updateOverallProgress();
   }
 
@@ -368,6 +372,73 @@ export class AppComponent implements OnInit {
     let sum = 0;
     for (const s of list) sum += (s.progress ?? 0);
     this.overallProgress = list.length ? Math.round(sum / list.length) : 0;
+  }
+
+  get overallCompleted(): number {
+    return this.sumStat('completed', 'completed');
+  }
+
+  get overallFailed(): number {
+    return this.sumStat('failed', 'failed');
+  }
+
+  get overallSkipped(): number {
+    return this.sumStat('skipped', 'skipped');
+  }
+
+  get overallInProgress(): number {
+    return this.sumStat('inProgress', 'downloading');
+  }
+
+  private sumStat(statKey: 'completed' | 'failed' | 'skipped' | 'inProgress', fallbackStatus: string): number {
+    let total = 0;
+    for (const source of this.sources || []) {
+      if (source.stats && source.stats[statKey] !== undefined && source.stats[statKey] !== null) {
+        total += this.parseCount(source.stats[statKey]);
+        continue;
+      }
+      if (source.status === fallbackStatus) {
+        total += 1;
+      }
+    }
+    return total;
+  }
+
+  private parseCount(value: string | number): number {
+    if (typeof value === 'number') {
+      return Number.isFinite(value) ? Math.round(value) : 0;
+    }
+
+    const normalized = String(value).trim().replace(/,/g, '');
+    if (!normalized) return 0;
+
+    const match = normalized.match(/^([0-9]*\.?[0-9]+)\s*([kmb])?$/i);
+    if (!match) {
+      const parsed = Number(normalized);
+      return Number.isFinite(parsed) ? Math.round(parsed) : 0;
+    }
+
+    const amount = Number(match[1]);
+    const suffix = (match[2] || '').toUpperCase();
+    const multiplier = suffix === 'K' ? 1000 : suffix === 'M' ? 1000000 : suffix === 'B' ? 1000000000 : 1;
+    return Math.round(amount * multiplier);
+  }
+
+  formatCompactCount(value: number): string {
+    const absolute = Math.abs(value);
+    if (absolute >= 1000000000) {
+      const compact = value / 1000000000;
+      return `${Number.isInteger(compact) ? compact.toFixed(0) : compact.toFixed(1)}B`;
+    }
+    if (absolute >= 1000000) {
+      const compact = value / 1000000;
+      return `${Number.isInteger(compact) ? compact.toFixed(0) : compact.toFixed(1)}M`;
+    }
+    if (absolute >= 1000) {
+      const compact = value / 1000;
+      return `${Number.isInteger(compact) ? compact.toFixed(0) : compact.toFixed(1)}K`;
+    }
+    return String(value);
   }
 
   get allPaused(): boolean {

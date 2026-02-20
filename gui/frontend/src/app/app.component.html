@@ -24,6 +24,21 @@
     </div>
   </div>
 
+  <div class="overall-stats-bar">
+    <span class="stats-item"><span class="stats-value">{{ overallProgress }}%</span> <span
+        class="stats-label">Progress</span></span>
+    <span class="stats-item"><span class="stats-value">{{ formatCompactCount(overallCompleted) }}</span> <span
+        class="stats-label">Completed</span></span>
+    <span class="stats-item"><span class="stats-value">{{ formatCompactCount(overallFailed) }}</span> <span
+        class="stats-label">Failed</span></span>
+    <span class="stats-item"><span class="stats-value">{{ formatCompactCount(overallSkipped) }}</span> <span
+        class="stats-label">Skipped</span></span>
+    <span class="stats-item"><span class="stats-value">{{ formatCompactCount(overallCancelled) }}</span> <span
+        class="stats-label">Cancelled</span></span>
+    <span class="stats-item"><span class="stats-value">{{ formatCompactCount(overallInProgress) }}</span> <span
+        class="stats-label">In-Progress</span></span>
+  </div>
+
   <div class="main-grid">
     <div class="grid-section downloads-section">
       <div class="empty-state" *ngIf="sources.length === 0">
@@ -144,32 +159,32 @@
   <div class="settings-modal-backdrop" *ngIf="settingsModalOpen" (click)="closeSettingsModal()">
     <div class="settings-modal" (click)="$event.stopPropagation()">
       <div class="settings-modal-header">
-        <span>Settings</span>
+        <span class="settings-modal-title">Settings</span>
         <button class="settings-modal-close" (click)="closeSettingsModal()" title="Close settings">
-          <span class="material-icons">close</span>
+          <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="settings-modal-content">
         <div class="settings-grid">
-          <div class="setting-item">
+          <div class="setting-item setting-item-number">
             <label class="setting-label">Max Connections</label>
             <input type="number" [(ngModel)]="maxConnections" min="1" class="setting-input">
           </div>
-          <div class="setting-item">
+          <div class="setting-item setting-item-number">
             <label class="setting-label">Max Retries</label>
             <input type="number" [(ngModel)]="maxRetries" min="0" class="setting-input">
           </div>
-          <div class="setting-item">
+          <div class="setting-item setting-item-number">
             <label class="setting-label">Simultaneous Downloads</label>
             <input type="number" [(ngModel)]="simultaneousDownloads" min="1" class="setting-input">
           </div>
-          <div class="setting-item">
+          <div class="setting-item setting-item-checkbox">
             <label class="checkbox-label">
               <input type="checkbox" [(ngModel)]="downloadInParallel" class="setting-checkbox">
               Download In Parallel
             </label>
           </div>
-          <div class="setting-item">
+          <div class="setting-item setting-item-checkbox">
             <label class="checkbox-label">
               <input type="checkbox" [(ngModel)]="skipExisting" class="setting-checkbox">
               Skip Existing
