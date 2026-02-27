@@ -451,6 +451,33 @@
   transition: background-color 0.12s ease, transform 0.06s ease;
 }
 
+.source-card.downloading {
+  --card-bg: #d6eeff;
+  --ring-track: rgba(33, 150, 243, 0.22);
+  background: #d6eeff;
+  border-color: #64b5f6;
+}
+
+.source-card.downloading .card-output-full {
+  background: #eaf4ff;
+  border-color: #b7d9fb;
+}
+
+.source-card.downloading .expand-btn,
+.source-card.downloading .cancel-btn {
+  background: #cfe7fb;
+  border-color: #9fc8ee;
+}
+
+.source-card.downloading .expand-btn:hover,
+.source-card.downloading .cancel-btn:hover {
+  background: #bddbf8;
+}
+
+.source-card.downloading .cancel-btn:hover .material-icons {
+  color: #2b5f96;
+}
+
 .card-header {
   display: flex;
   align-items: center;
@@ -1525,6 +1552,56 @@
 .app-container.dark-mode .source-card {
   border-color: #404040;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.app-container.dark-mode .source-card.downloading {
+  --card-bg: #103b72;
+  --ring-track: rgba(144, 192, 238, 0.32);
+  background: #103b72;
+  border-color: #2a76c7;
+}
+
+.app-container.dark-mode .source-card.downloading .card-output-full {
+  background: #0b2f5f;
+  border-color: #2a76c7;
+  color: #d8eaff;
+}
+
+.app-container.dark-mode .source-card.downloading .expand-btn,
+.app-container.dark-mode .source-card.downloading .cancel-btn {
+  background: rgba(11, 47, 95, 0.55);
+  border-color: #7fb2e8;
+}
+
+.app-container.dark-mode .source-card.downloading .expand-btn .material-icons,
+.app-container.dark-mode .source-card.downloading .cancel-btn .material-icons {
+  color: #d7e9ff;
+}
+
+.app-container.dark-mode .source-card.downloading .expand-btn:hover,
+.app-container.dark-mode .source-card.downloading .cancel-btn:hover {
+  background: rgba(9, 39, 79, 0.75);
+}
+
+.app-container.dark-mode .source-card.downloading .cancel-btn:hover .material-icons {
+  color: #d7e9ff;
+}
+
+.app-container.dark-mode .source-card.downloading .card-path {
+  color: #8faed1;
+  opacity: 0.95;
+}
+
+.app-container.dark-mode .source-card.downloading .stat {
+  color: #8faed1;
+}
+
+.app-container.dark-mode .source-card.downloading .stat-value {
+  color: #f2f7ff;
+}
+
+.app-container.dark-mode .source-card.downloading .stat-label {
+  color: #8faed1;
 }
 
 .app-container.dark-mode .card-title {

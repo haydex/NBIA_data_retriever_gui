@@ -54,6 +54,18 @@ export class AppComponent implements OnInit {
   }> = [];
   overallPlaying = false;
 
+  get orderedSources() {
+    const list = [...this.sources];
+    const rank = (status?: string) => {
+      if (status === 'downloading') return 0;
+      if (status === 'paused') return 1;
+      if (status === 'queued') return 2;
+      if (status === 'completed') return 3;
+      return 4;
+    };
+    return list.sort((a, b) => rank(a.status) - rank(b.status));
+  }
+
   // Toast notification properties
   toasts: Array<{
     id: number;
@@ -171,13 +183,18 @@ export class AppComponent implements OnInit {
       }
     ];
 
+    this.enforceSingleActive();
     this.updateOverallProgress();
   }
 
   toggleOverallPlay() {
-    this.overallPlaying = !this.overallPlaying;
-    for (const s of this.sources) {
-      s.playing = this.overallPlaying;
+    const shouldPlay = !this.overallPlaying;
+    if (shouldPlay) {
+      const next = this.sources.find(s => s.status !== 'completed');
+      this.enforceSingleActive(next ? next.id : undefined);
+      this.scrollDownloadsToTop();
+    } else {
+      this.enforceSingleActive(null);
     }
   }
 
@@ -200,11 +217,12 @@ export class AppComponent implements OnInit {
     if (ev) ev.stopPropagation();
     const s = this.sources.find(x => x.id === id);
     if (s) {
-      s.playing = !s.playing;
-      this.overallPlaying = this.sources.every(x => x.playing);
-
-      if (!s.playing) {
+      const shouldPlay = !s.playing;
+      this.enforceSingleActive(shouldPlay ? s.id : null);
+      if (!shouldPlay) {
         this.showToast(`${s.title} download paused.`, 'warning');
+      } else {
+        this.scrollDownloadsToTop();
       }
     }
   }
@@ -349,6 +367,7 @@ export class AppComponent implements OnInit {
     }));
     this.sources = list;
     this.overallCancelled = 0;
+    this.enforceSingleActive();
     this.updateOverallProgress();
   }
 
@@ -477,5 +496,40 @@ export class AppComponent implements OnInit {
     if (index !== -1) {
       this.toasts.splice(index, 1);
     }
+  }
+
+  private enforceSingleActive(activeId?: string | null) {
+    let hasActive = false;
+    for (const source of this.sources) {
+      const shouldBeActive = activeId === null
+        ? false
+        : (activeId ? source.id === activeId : (!hasActive && !!source.playing));
+      if (shouldBeActive && !hasActive) {
+        source.playing = true;
+        hasActive = true;
+        if (source.status !== 'completed') {
+          source.status = 'downloading';
+        }
+      } else {
+        source.playing = false;
+        if (source.status !== 'completed') {
+          source.status = 'paused';
+        }
+      }
+    }
+    this.overallPlaying = hasActive;
+  }
+
+  private scrollDownloadsToTop() {
+    requestAnimationFrame(() => {
+      const container = document.querySelector('.sources-cards');
+      if (container && 'scrollTo' in container) {
+        (container as HTMLElement).scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
   }
 }

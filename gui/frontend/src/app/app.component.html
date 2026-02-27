@@ -56,11 +56,11 @@
       </div>
 
       <div class="sources-cards" *ngIf="sources.length > 0">
-        <div class="source-card" *ngFor="let src of sources">
+        <div class="source-card" *ngFor="let src of orderedSources" [ngClass]="src.status">
           <div class="card-main" (click)="toggleSourceCollapse(src.id)">
             <div class="left-area">
               <div class="ring" [style.--value]="src.progress"
-                [style.--accent]="src.status === 'completed' ? '#4caf50' : (src.playing ? src.accent : 'var(--ring-paused)')"
+                [style.--accent]="src.status === 'completed' ? '#4caf50' : (src.status === 'downloading' ? '#2196F3' : (src.playing ? src.accent : 'var(--ring-paused)'))"
                 [style.--track]="'var(--ring-track)'" [style.--bg]="'var(--card-bg)'">
                 <button class="play-pause-btn" (click)="toggleSourcePlay(src.id, $event)"
                   [title]="src.playing ? 'Pause' : 'Play'" aria-label="Toggle play">
