@@ -56,7 +56,8 @@
       </div>
 
       <div class="sources-cards" *ngIf="sources.length > 0">
-        <div class="source-card" *ngFor="let src of orderedSources" [ngClass]="src.status">
+        <div class="source-card" *ngFor="let src of orderedSources; trackBy: trackBySourceId" [ngClass]="src.status"
+          [attr.data-source-id]="src.id">
           <div class="card-main" (click)="toggleSourceCollapse(src.id)">
             <div class="left-area">
               <div class="ring" [style.--value]="src.progress"

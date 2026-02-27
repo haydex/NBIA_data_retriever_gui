@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FetchFiles, OpenInputFileDialog, OpenOutputDirectoryDialog, RunCLIFetch } from '../../wailsjs/go/main/App';
 
@@ -20,6 +20,8 @@ import { FetchFiles, OpenInputFileDialog, OpenOutputDirectoryDialog, RunCLIFetch
   ]
 })
 export class AppComponent implements OnInit {
+  constructor(private readonly cdr: ChangeDetectorRef) { }
+
   status = 'Ready';
   inputFilePath = '';
   outputDirPath = '';
@@ -74,6 +76,7 @@ export class AppComponent implements OnInit {
   }> = [];
   private readonly maxToasts = 1;
   private toastIdCounter = 0;
+  private readonly toastEnabled = false;
 
   ngOnInit() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -191,10 +194,10 @@ export class AppComponent implements OnInit {
     const shouldPlay = !this.overallPlaying;
     if (shouldPlay) {
       const next = this.sources.find(s => s.status !== 'completed');
-      this.enforceSingleActive(next ? next.id : undefined);
+      this.animateCardReorder(() => this.enforceSingleActive(next ? next.id : undefined));
       this.scrollDownloadsToTop();
     } else {
-      this.enforceSingleActive(null);
+      this.animateCardReorder(() => this.enforceSingleActive(null));
     }
   }
 
@@ -218,7 +221,7 @@ export class AppComponent implements OnInit {
     const s = this.sources.find(x => x.id === id);
     if (s) {
       const shouldPlay = !s.playing;
-      this.enforceSingleActive(shouldPlay ? s.id : null);
+      this.animateCardReorder(() => this.enforceSingleActive(shouldPlay ? s.id : null));
       if (!shouldPlay) {
         this.showToast(`${s.title} download paused.`, 'warning');
       } else {
@@ -231,13 +234,27 @@ export class AppComponent implements OnInit {
     const index = this.sources.findIndex(x => x.id === id);
     if (index !== -1) {
       const sourceName = this.sources[index].title;
-      this.sources.splice(index, 1);
-      this.overallCancelled += 1;
-      this.updateOverallProgress();
-      if (this.sources.length === 0) {
-        this.overallPlaying = false;
+
+      if (typeof document === 'undefined') {
+        this.removeSourceAtIndex(index, sourceName);
+        return;
       }
-      this.showToast(`${sourceName} download cancelled and removed.`, 'success');
+
+      const card = document.querySelector<HTMLElement>(`.sources-cards .source-card[data-source-id="${id}"]`);
+      if (!card) {
+        this.removeSourceAtIndex(index, sourceName);
+        return;
+      }
+
+      card.classList.add('removing');
+      window.setTimeout(() => {
+        this.animateCardReorder(() => {
+          const idx = this.sources.findIndex(x => x.id === id);
+          if (idx !== -1) {
+            this.removeSourceAtIndex(idx, sourceName);
+          }
+        });
+      }, 180);
     }
   }
 
@@ -474,6 +491,10 @@ export class AppComponent implements OnInit {
     // Ensure only one toast is visible at a time
     this.toasts = [];
 
+    if (!this.toastEnabled) {
+      return;
+    }
+
     const toast = {
       id: this.toastIdCounter++,
       message,
@@ -496,6 +517,10 @@ export class AppComponent implements OnInit {
     if (index !== -1) {
       this.toasts.splice(index, 1);
     }
+  }
+
+  trackBySourceId(_index: number, source: { id: string }) {
+    return source.id;
   }
 
   private enforceSingleActive(activeId?: string | null) {
@@ -531,5 +556,62 @@ export class AppComponent implements OnInit {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
+  }
+
+  private removeSourceAtIndex(index: number, sourceName: string) {
+    this.sources.splice(index, 1);
+    this.overallCancelled += 1;
+    this.updateOverallProgress();
+    if (this.sources.length === 0) {
+      this.overallPlaying = false;
+    }
+    this.showToast(`${sourceName} download cancelled and removed.`, 'success');
+  }
+
+  private animateCardReorder(mutate: () => void) {
+    if (typeof document === 'undefined') {
+      mutate();
+      return;
+    }
+
+    const firstPositions = this.captureCardPositions();
+    mutate();
+    this.cdr.detectChanges();
+
+    requestAnimationFrame(() => {
+      const cards = Array.from(document.querySelectorAll<HTMLElement>('.sources-cards .source-card[data-source-id]'));
+      for (const card of cards) {
+        const id = card.dataset['sourceId'];
+        if (!id) continue;
+        const first = firstPositions.get(id);
+        if (!first) continue;
+
+        const last = card.getBoundingClientRect();
+        const deltaX = first.left - last.left;
+        const deltaY = first.top - last.top;
+        if (Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5) continue;
+
+        card.style.transition = 'none';
+        card.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+        card.getBoundingClientRect();
+        card.style.transition = 'transform 280ms cubic-bezier(0.22, 1, 0.36, 1)';
+        card.style.transform = '';
+
+        window.setTimeout(() => {
+          card.style.transition = '';
+        }, 320);
+      }
+    });
+  }
+
+  private captureCardPositions() {
+    const positions = new Map<string, DOMRect>();
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.sources-cards .source-card[data-source-id]'));
+    for (const card of cards) {
+      const id = card.dataset['sourceId'];
+      if (!id) continue;
+      positions.set(id, card.getBoundingClientRect());
+    }
+    return positions;
   }
 }

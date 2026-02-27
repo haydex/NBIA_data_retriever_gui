@@ -448,7 +448,8 @@
 }
 
 .source-card {
-  transition: background-color 0.12s ease, transform 0.06s ease;
+  transition: background-color 0.18s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 .source-card.downloading {
@@ -825,11 +826,26 @@
 
 .source-card:hover {
   background-color: rgba(0, 0, 0, 0.03);
-  transform: translateY(-1px);
+  transform: translateY(-4px);
+}
+
+.source-card.removing {
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+}
+
+.source-card.downloading:hover {
+  background-color: #e6f3ff;
 }
 
 .app-container.dark-mode .source-card:hover {
   background-color: rgba(255, 255, 255, 0.03);
+}
+
+.app-container.dark-mode .source-card.downloading:hover {
+  background-color: #0d3363;
 }
 
 .card-main {
